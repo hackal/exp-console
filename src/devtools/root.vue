@@ -1,10 +1,18 @@
 <template>
   <div id="root">
+    {{ $tabId }}
     <div v-for="(domain, index) in domains" :key="index">
       <span>{{ domain }}</span> - <span @click="deleteDomain(domain)">X</span>
     </div>
     <input type="text" v-model="domain">
     <button @click="addDomain">Add</button>
+    <table>
+      <tr v-for="(request, index) in requests" :key="index">
+        <td>{{ request }}</td>
+      </tr>
+    </table>
+    <div >
+    </div>
   </div>
 </template>
 <script>
@@ -13,13 +21,20 @@
   export default {
     data: () => ({
       domains: [],
-      domain: ''
+      domain: '',
+      requests: []
     }),
     computed: { },
-    created () {
-      console.log('devtools')
-    },
+    created () { },
     mounted () {
+      this.$bus.$on('request', (data) => {
+        this.requests.push(data)
+      })
+
+      this.$bus.$on('navigate', (data) => {
+        this.requests.push(data)
+      })
+
       this.refreshDomains()
       storage.onUpdate(this.refreshDomains)
     },
