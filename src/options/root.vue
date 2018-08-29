@@ -1,15 +1,13 @@
 <template lang="pug">
-    div {{ __('options') }}
+    div options
 </template>
 <script>
-  const __ = chrome.i18n.getMessage
-
   export default {
     data: () => ({
     }),
     computed: { },
     created () {
-      console.log(__('options'))
+      console.log('options')
     },
     mounted () { },
     methods: { }

@@ -1,48 +1,47 @@
 <template>
-    <div class="app">
-      <ul>
-        <li>
-          <exp-events ref='expEvents'></exp-events>
-        </li>
-      </ul> 
+  <div id="root">
+    <div v-for="(domain, index) in domains" :key="index">
+      <span>{{ domain }}</span> - <span @click="deleteDomain(domain)">X</span>
     </div>
+    <input type="text" v-model="domain">
+    <button @click="addDomain">Add</button>
+  </div>
 </template>
 <script>
-  import events from './events.vue'
-  const __ = chrome.i18n.getMessage
+  import Storage from '../helpers/storage.js'
+  const storage = new Storage()
   export default {
     data: () => ({
-      currentPage: 0
+      domains: [],
+      domain: ''
     }),
     computed: { },
     created () {
-      console.log(__('devtools'))
-    },
-    components: {
-      'exp-events': events
+      console.log('devtools')
     },
     mounted () {
-      this.$nextTick(() => {
-        window.onVueRendered()
-      })
+      this.refreshDomains()
+      storage.onUpdate(this.refreshDomains)
     },
-    methods: { }
+    methods: {
+      deleteDomain (domain) {
+        storage.deleteDomains(domain)
+      },
+      refreshDomains () {
+        this.domains.splice(0)
+        storage.getApiDomains().then(domains => {
+          domains.forEach(domain => this.domains.push(domain))
+        })
+      },
+      addDomain () {
+        if (this.domain === '') return
+        storage.addDomains(this.domain)
+      }
+    }
   }
 </script>
-<style lang="scss" scoped>
-  div.app {
-    height: 100%;
-    width: 100%;
-  }
-  ul {
-    list-style-type: none;
-    height: 100%;
-    padding: 0;
+<style lang="scss">
+  div {
+    color: blue
   }
 </style>
-<style>
-body {
-  overflow:hidden;
-}
-</style>
-

@@ -1,6 +1,7 @@
 <template>
     <div class="eventPage"> 
-      <div class='eventGui top'>
+      <div class="eventGui top">
+        {{ domains }}
         <input type="text" class='filter' v-model='filters.byName' placeholder='Event filter..'>
         <icon name='search' class='searchIcon' scale='0.9'></icon>
       </div>
@@ -18,9 +19,12 @@
   import update from './update.vue'
   import divider from './divider.vue'
   import toggle from './switch.vue'
+  import Storage from '../helpers/storage.js'
+  const storage = new Storage()
 
   export default {
     data: () => ({
+      domains: [],
       events: [],
       name: '',
       type: '',
@@ -41,7 +45,13 @@
       'exp-divider': divider,
       'exp-toggle': toggle
     },
-    mounted () { },
+    mounted () {
+      storage.getApiDomains().then(domains => {
+        domains.forEach(domain => {
+          this.domains.push(domain)
+        })
+      })
+    },
     methods: {
       addItems (items) {
         this.events = items.concat(this.events)
@@ -61,13 +71,13 @@
     display: inline-block;
   }
   .eventGui {
-    width: $eventsWidth;
-    margin-left: $marginCenter;
-    height: $eventGuiHeight;
+    // width: $eventsWidth;
+    // margin-left: $marginCenter;
+    // height: $eventGuiHeight;
     background-color: white;
   }
   .eventGui.top {
-    margin-top: 15px;
+    // margin-top: 15px;
   }
   .eventGui.top .filter {
     height: 24px;
@@ -89,16 +99,16 @@
   .eventGui.top input:active {
     border: none;
   }
-  .eventPage {
-    max-width: 100vw;
-    width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
-    background-color: #EBEEF7;
-  }
+  // .eventPage {
+  //   max-width: 100vw;
+  //   width: 100vw;
+  //   height: 100vh;
+  //   max-height: 100vh;
+  //   background-color: #EBEEF7;
+  // }
   .events {
-    width: $eventsWidth;
-    margin-left: $marginCenter;
+    // width: $eventsWidth;
+    // margin-left: $marginCenter;
     overflow-y: auto;
     height: 80%;
     background-color: white;

@@ -1,5 +1,5 @@
-export default {
-  toBase64: function (arrayBuffer) {
+export default class ArrayBufferConverter {
+  toBase64 (arrayBuffer) {
     var binary = ''
     var bytes = new Uint8Array(arrayBuffer)
     var len = bytes.byteLength
@@ -7,9 +7,9 @@ export default {
       binary += String.fromCharCode(bytes[i])
     }
     return window.btoa(binary)
-  },
+  }
 
-  toString: function (arrayBuffer) {
+  toString (arrayBuffer) {
     try {
       var base64 = this.toBase64(arrayBuffer)
       return decodeURIComponent(escape(window.atob(base64)))
@@ -17,9 +17,9 @@ export default {
       console.warn('Can not be converted to String')
       return false
     }
-  },
+  }
 
-  toJSON: function (arrayBuffer) {
+  toJSON (arrayBuffer) {
     try {
       var string = this.toString(arrayBuffer)
       return JSON.parse(string)

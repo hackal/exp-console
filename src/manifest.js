@@ -49,7 +49,7 @@ module.exports = {
     matches: ['<all_urls>'],
     all_frames: true
   }],
-  default_locale: 'en',
+  // default_locale: 'en',
   manifest_version: 2,
   content_security_policy: "script-src 'self'; object-src 'self'",
   web_accessible_resources: [

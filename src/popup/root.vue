@@ -1,16 +1,14 @@
 <template lang="pug">
     div
-      el-button(type="primary" @click="tab") {{ __('popup') }}
+      el-button(type="primary" @click="tab") New tab
 </template>
 <script>
-  const __ = chrome.i18n.getMessage
-
   export default {
     data: () => ({
     }),
     computed: { },
     created () {
-      console.log(__('popup'))
+      console.log('New tab')
     },
     mounted () { },
     methods: {

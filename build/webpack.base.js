@@ -103,9 +103,6 @@ module.exports = {
       port: 9090,
       manifest: path.join(rootDir, 'src', 'manifest.js')
     }),
-    new GenerateLocaleJsonPlugin({
-      _locales: path.join(rootDir, 'src', '_locales')
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
