@@ -19,7 +19,7 @@ export default class Request {
     }
     if (this.errorCB !== undefined) {
       this.provider.onErrorOccurred.removeListener(this.errorCB)
-      this.provider.onErrorOccurred.addListener(this.errorCB)
+      this.provider.onErrorOccurred.addListener(this.errorCB, { urls: this.filters })
     }
   }
 
@@ -35,6 +35,6 @@ export default class Request {
 
   error (callback) {
     this.errorCB = callback
-    this.provider.onErrorOccurred.addListener(this.errorCB)
+    this.provider.onErrorOccurred.addListener(this.errorCB, { urls: this.filters })
   }
 }

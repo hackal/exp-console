@@ -1,13 +1,13 @@
 import Storage from '../helpers/storage.js'
 import Request from '../helpers/webrequest.js'
-// import ArrayBufferConverter from '../helpers/arrayBufferConverter.js'
 import Hooks from '../helpers/hooks.js'
 import Bus from '../helpers/bus.js'
+import ArrayBufferConverter from '../helpers/arrayBufferConverter.js'
 
+const arrayBufferConverter = new ArrayBufferConverter()
 const storage = new Storage()
 const appRequest = new Request(['*://*/api/globals.json*'])
 const apiRequest = new Request([])
-// const arrayBufferConverter = new ArrayBufferConverter()
 const extension = new Hooks()
 const companiesCache = {}
 const bus = new Bus(true)
@@ -54,5 +54,37 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 apiRequest.beforeRequest((details) => {
   const tabId = details.tabId
-  bus.$emit('request', details, tabId)
+  const data = {
+    method: details.method,
+    requestId: details.requestId,
+    tabId: details.tabId,
+    timeStamp: details.timeStamp,
+    type: details.type,
+    url: details.url,
+    initiator: details.initiator
+  }
+
+  if (data.method === 'POST') {
+    data.body = arrayBufferConverter.toJSON(details.requestBody.raw[0].bytes)
+  }
+
+  bus.$emit('request', data, tabId)
+})
+
+apiRequest.completed((details) => {
+  const tabId = details.tabId
+  const data = {
+    requestId: details.requestId,
+    fromCache: details.fromCache,
+    responseHeaders: details.details,
+    statusCode: details.statusCode,
+    statusLine: details.statusLine,
+    timeStamp: details.timeStamp
+  }
+
+  bus.$emit('ack', data, tabId)
+})
+
+apiRequest.error((details) => {
+  console.log(details)
 })
