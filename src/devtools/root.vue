@@ -2,80 +2,58 @@
   <div id="root">
     <div class="header">
       <div class="tab active">
-        <span>OVERVIEW</span>
+        <router-link to="/events" class="span">EVENTS</router-link>
       </div>
       <div class="tab">
-        <span>WARNINGS</span>
+        <span class="span">WARNINGS</span>
       </div>
       <div class="tab">
-        <span>SETTINGS</span>
+        <span class="span">SETTINGS</span>
       </div>
     </div>
 
-    <div class="content">
-      <div class="event-table">
-        <div class="event-table-header">
-          <span>EVENTS</span>
-        </div>
-        <div class="event-table-body">
-          <div class="event" v-for="(request, index) in requests" :key="index">
-            <pre>
-              {{ request }}
-            </pre>
-          </div>
-        </div>
-      </div>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
-  import Storage from '../helpers/storage.js'
-  const storage = new Storage()
-  
+  import itemTemplate from './timeLineItem.js'
+  import RequestProcessor from '../helpers/requestProcessor.js'
+
   export default {
     data: () => ({
-      domains: [],
+      ids: {},
       domain: '',
-      requests: []
+      requests: [],
+      items: null
     }),
     computed: { },
-    created () { },
+    created () {
+      this.$router.push('/events')
+    },
     mounted () {
+      this.requestProcessor = new RequestProcessor(this.updateIds)
       this.$bus.$on('request', (data) => {
-        if (data.method === 'POST') {
-          this.requests.push(data)
+        let request = this.requestProcessor.processRequest(data)
+        if (request.valid) {
+          this.addItems(request.items)
         }
-        // if (data.method === 'POST') {
-        //   // this.requests.push()
-        //   this.requests.push(data)
-        // }
       })
 
       this.$bus.$on('navigate', (data) => {
-        this.requests.push(data)
+        let url = new URL(data)
+        this.addItems([itemTemplate('divider', 'divider', {}, url.pathname, url.host, {}, Date.now())])
       })
-
-      this.refreshDomains()
-      storage.onUpdate(this.refreshDomains)
     },
     methods: {
-      deleteDomain (domain) {
-        storage.deleteDomains(domain)
+      updateIds (ids) {
       },
-      refreshDomains () {
-        this.domains.splice(0)
-        storage.getApiDomains().then(domains => {
-          domains.forEach(domain => this.domains.push(domain))
-        })
-      },
-      addDomain () {
-        if (this.domain === '') return
-        storage.addDomains(this.domain)
+      addItems (items) {
+        this.$eventsProps.items = items.concat(this.$eventsProps.items)
       }
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
   * {
     font-family: 'Lato', sans-serif;
@@ -102,11 +80,12 @@
       height: 35px;
       margin-right: 25px;
 
-      span {
+      .span {
         font-weight: bold;
         font-size: 11px;
         color: #636696;
         line-height: 31px;
+        text-decoration: none;
       }
 
       &.active {
@@ -125,37 +104,5 @@
         }
       }
     }
-  }
-
-  .content {
-    padding: 25px;
-    
-    .event-table {
-      border-radius: 4px 4px 0 0;
-      box-shadow: 0 1px 2px 0 rgba(99,102,150,0.25);
-
-      .event-table-header {
-        background-color: #F8F7FD;
-        height: 50px;
-        padding: 0 20px;
-
-        span {
-          font-size: 12px;
-          font-weight: bold;
-          line-height: 50px;
-        }
-      }
-
-      .event-table-body {
-        .event {
-          background: #ffffff;
-          // height: 50px;
-          // line-height: 50px;
-          padding: 0 20px;
-          border-bottom: 1px solid #EDEEF7;
-        }
-      }
-    }
-    
   }
 </style>

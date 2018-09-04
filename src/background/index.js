@@ -16,6 +16,12 @@ extension.onInstall(() => {
   storage.addDomains(['api.exponea.com', 'api.infinario.com'])
 })
 
+extension.onSuspend(() => {
+  chrome.browserAction.setBadgeBackgroundColor({
+    color: '#990000'
+  })
+})
+
 appRequest.completed((details) => {
   const tabId = details.tabId
   chrome.tabs.sendMessage(tabId, { type: 'APP_LOAD', request: details }, (response) => {

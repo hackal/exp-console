@@ -13,9 +13,10 @@
 
 <script>
 import property from './property.vue'
+import dateFormat from 'dateformat'
 export default {
   props: ['data', 'size'],
-  data: function () {
+  data () {
     return {
       colors: ['yellow', 'red', 'blue', 'limegreen', 'black', 'fuchsia', 'orange'],
       rolledOut: false
@@ -35,7 +36,7 @@ export default {
       return ret
     },
     date () {
-      return window.dateFormater.format(new Date(this.data.timeStamp), 'MMM DD,YYYY HH:mm:ss')
+      return dateFormat(new Date(this.data.timeStamp), 'MMM DD,YYYY HH:mm:ss')
     }
   },
   methods: {

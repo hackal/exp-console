@@ -10,4 +10,10 @@ export default class Hooks {
       if (details.reason === 'update') callback()
     })
   }
+
+  onSuspend (callback) {
+    chrome.runtime.onSuspend.addListener((details) => {
+      callback()
+    })
+  }
 }
