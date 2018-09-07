@@ -1,5 +1,6 @@
 <template>
   <div id="root">
+    <exp-gui :ids='ids'></exp-gui>
     <div class="header">
       <div class="tab active">
         <router-link to="/events" class="span">EVENTS</router-link>
@@ -18,6 +19,7 @@
 <script>
   import itemTemplate from './timeLineItem.js'
   import RequestProcessor from '../helpers/requestProcessor.js'
+  import Gui from './gui.vue'
 
   export default {
     data: () => ({
@@ -46,10 +48,16 @@
     },
     methods: {
       updateIds (ids) {
+        this.ids = ids
       },
       addItems (items) {
-        this.$eventsProps.items = items.concat(this.$eventsProps.items)
+        for (let i = 0; i < items.length; ++i) {
+          this.$eventsProps.items.splice(0, 0, items[items.length - 1 - i])
+        }
       }
+    },
+    components: {
+      'exp-gui': Gui
     }
   }
 </script>
@@ -64,7 +72,7 @@
 
   #root {
     width: 100%;
-    min-height: 100vh;
+    max-height: 100vh;
     background: #EDEEF7;
   }
 

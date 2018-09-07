@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import Events from './events.vue'
 
 Vue.use(VueRouter)
-const eventsProps = { }
+var eventsProps = {}
 Vue.set(eventsProps, 'items', [])
 const routes = [
   { path: '/events', component: Events, props: () => ({ eventsProps: eventsProps }) }

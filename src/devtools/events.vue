@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="root-events">
     <div class="content">
       <div class="event-table"> 
         <div class="event-table-header">
@@ -10,7 +10,7 @@
           <div class="eventPage">
             <div class="events-wrap">
               <div class='events'>
-                <component :is=' "exp-" + e.type' :key='index' v-for='(e,index) in eventsProps.items' :data='e' :size='eventsProps.length'></component>
+                <component :is=' "exp-" + e.type' :key='index' v-for='(e,index) in eventsProps.items' :data='e' :size='eventsProps.items.length'></component>
               </div>
             </div>
             <!-- v-if='!((filters.showSessions === false && sessionEventsNames.includes(e.name)) || (!!filters.byName && (e.name.indexOf(filters.byName) === -1 || e.type === "exp-update")))' -->
@@ -52,8 +52,7 @@
       'exp-toggle': toggle
     },
     mounted () {
-      this.eventsProps.items.push('lol')
-      console.log(this.eventsProps)
+      console.log(this.events)
     },
     methods: {
       updateSessionFilter (value) {
@@ -74,7 +73,7 @@
   $marginCenter: 5%;
   $eventGuiHeight: 45px;
 
-  #root {
+  #root-events {
     width: 100%;
     min-height: 90vh;
     background: #EDEEF7;
@@ -110,6 +109,9 @@
           margin-top: -15px;
           outline: none;
           background-color: transparent;
+        }
+        ::placeholder {
+          color: #636696;
         }
 
       }
