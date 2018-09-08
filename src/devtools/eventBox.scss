@@ -1,18 +1,11 @@
-body {
-  margin: 0 !important;
-  padding: 0;
-}
-
 .eventBody {
   width: 100%;
   font-size: 17px;
   box-sizing: border-box;
-}
-.eventBody:nth-child(odd) {
-  background-color: #F8F7FD;
-}
-.eventBody:nth-child(even) {
   background-color: #FFFFFF;
+  padding: 5px 0 5px 0;
+  border-top: 1px solid #ebeef7;
+  min-width: 610px;
 }
 .clickZone {
   cursor: pointer;
@@ -44,10 +37,11 @@ body {
 }
 .circle {
     position: relative;
-    bottom: 2px;
+    bottom: 0px;
     border-radius: 50%;
-    width: 5px;
-    height: 4px;
+    width: 10px;
+    height: 10px;
     display: inline-block;
+    background-clip: padding-box;
     margin-right: 10px;
 }

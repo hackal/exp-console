@@ -10,10 +10,9 @@
           <div class="eventPage">
             <div class="events-wrap">
               <div class='events'>
-                <component :is=' "exp-" + e.type' :key='index' v-for='(e,index) in eventsProps.items' :data='e' :size='eventsProps.items.length'></component>
+                <component :is=' "exp-" + e.type' :key='index' v-for='(e,index) in items' :data='e' :size='items.length' v-if='shouldShow(e)'></component>
               </div>
             </div>
-            <!-- v-if='!((filters.showSessions === false && sessionEventsNames.includes(e.name)) || (!!filters.byName && (e.name.indexOf(filters.byName) === -1 || e.type === "exp-update")))' -->
             <div class="event-table-header">
               <exp-toggle class="switch" @onSwitch='updateSessionFilter'></exp-toggle>
               <span> Show session events</span>
@@ -41,7 +40,7 @@
       sessionEventsNames: ['session_ping']
     }),
     props: [
-      'eventsProps'
+      'items'
     ],
     computed: { },
     created () { },
@@ -52,11 +51,22 @@
       'exp-toggle': toggle
     },
     mounted () {
-      console.log(this.events)
+      console.log(this.ssss)
     },
     methods: {
       updateSessionFilter (value) {
         this.filters.showSessions = value
+      },
+      shouldShow (e) {
+        if (!this.filters.showSessions && this.sessionEventsNames.includes(e.name)) {
+          return false
+        }
+        if (this.filters.byName && e.type !== 'divider') {
+          if (e.name.indexOf(this.filters.byName) === -1 || e.type === 'update') {
+            return false
+          }
+        }
+        return true
       }
     }
   }
@@ -75,7 +85,7 @@
 
   #root-events {
     width: 100%;
-    min-height: 90vh;
+    height: 100%;
     background: #EDEEF7;
   }
 
@@ -148,15 +158,13 @@
   //   background-color: #EBEEF7;
   // }
   .events-wrap {
-    height: 80vh;
+    height: 75vh;
     background-color: white;
   }
   .events {
-    // width: $eventsWidth;
-    // margin-left: $marginCenter;
     overflow-y: auto;
     background-color: white;
-    padding-top: 3px;
+    height: 100%;
   }
   .events::-webkit-scrollbar {
     width: 0px; 

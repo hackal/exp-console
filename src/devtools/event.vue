@@ -32,11 +32,14 @@ export default {
         sum += this.data.name.charCodeAt(i)
       }
       var col = this.colors[sum % this.colors.length]
-      var ret = { 'box-shadow': '0 0 0 3px ' + col + ', 0 0 0 3px ' + col }
+      var ret = { 'background-color': col }
       return ret
     },
     date () {
-      return dateFormat(new Date(this.data.timeStamp), 'MMM DD,YYYY HH:mm:ss')
+      if (this.data.timeStamp === undefined) {
+        console.log(this.data)
+      }
+      return dateFormat(this.data.timeStamp * 1000, 'mmm d,yyyy HH:MM:ss')
     }
   },
   methods: {

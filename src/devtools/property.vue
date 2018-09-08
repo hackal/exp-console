@@ -86,6 +86,6 @@ export default {
   display: inline-table;
   color: #7477b0;
   white-space: pre-line;
-  width: 62%;
+  width: 60%;
 }
 </style>

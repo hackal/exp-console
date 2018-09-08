@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <router-view></router-view>
+    <router-view :items='items'></router-view>
   </div>
 </template>
 <script>
@@ -26,7 +26,7 @@
       ids: {},
       domain: '',
       requests: [],
-      items: null
+      items: []
     }),
     computed: { },
     created () {
@@ -52,7 +52,7 @@
       },
       addItems (items) {
         for (let i = 0; i < items.length; ++i) {
-          this.$eventsProps.items.splice(0, 0, items[items.length - 1 - i])
+          this.items.splice(0, 0, items[items.length - 1 - i])
         }
       }
     },
@@ -68,6 +68,10 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
   }
 
   #root {

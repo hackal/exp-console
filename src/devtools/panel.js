@@ -5,10 +5,8 @@ import VueRouter from 'vue-router'
 import Events from './events.vue'
 
 Vue.use(VueRouter)
-var eventsProps = {}
-Vue.set(eventsProps, 'items', [])
 const routes = [
-  { path: '/events', component: Events, props: () => ({ eventsProps: eventsProps }) }
+  { path: '/events', component: Events }
 ]
 const router = new VueRouter({ routes })
 const tabId = chrome.devtools.inspectedWindow.tabId
@@ -16,7 +14,6 @@ const bus = new Bus()
 bus.connect(tabId)
 
 Vue.config.productionTip = false
-Object.defineProperty(Vue.prototype, '$eventsProps', { value: eventsProps })
 Object.defineProperty(Vue.prototype, '$tabId', { value: tabId })
 Object.defineProperty(Vue.prototype, '$bus', { value: bus })
 

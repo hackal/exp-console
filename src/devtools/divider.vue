@@ -9,7 +9,7 @@ export default {
   props: ['data'],
   computed: {
     displayPath () {
-      return this.data.host + this.data.path
+      return this.data.host.replace('www.', '') + this.data.path
     }
   }
 }
