@@ -86,5 +86,17 @@ apiRequest.completed((details) => {
 })
 
 apiRequest.error((details) => {
-  console.log(details)
+  const tabId = details.tabId
+  const data = {
+    error: details.error,
+    fromCache: details.fromCache,
+    initiator: details.initiator,
+    method: details.method,
+    requestId: details.requestId,
+    tabId: details.tabId,
+    timeStamp: details.timeStamp,
+    url: details.url
+  }
+
+  bus.$emit('error', data, tabId)
 })
