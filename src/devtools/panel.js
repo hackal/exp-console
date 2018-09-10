@@ -3,10 +3,12 @@ import root from './root.vue'
 import Bus from '../helpers/bus.js'
 import VueRouter from 'vue-router'
 import Events from './events.vue'
+import Settings from './settings.vue'
 
 Vue.use(VueRouter)
 const routes = [
-  { path: '/events', component: Events }
+  { path: '/events', component: Events },
+  { path: '/settings', component: Settings }
 ]
 const router = new VueRouter({ routes })
 const tabId = chrome.devtools.inspectedWindow.tabId

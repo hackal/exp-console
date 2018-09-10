@@ -14,7 +14,7 @@
               </div>
             </div>
             <div class="event-table-header">
-              <exp-toggle class="switch" @onSwitch='updateSessionFilter'></exp-toggle>
+              <exp-toggle @onSwitch='updateSessionFilter' :default='false' :position='{left: -2, top: 3}'></exp-toggle>
               <span> Show session events</span>
             </div>
           </div>
@@ -51,7 +51,6 @@
       'exp-toggle': toggle
     },
     mounted () {
-      console.log(this.ssss)
     },
     methods: {
       updateSessionFilter (value) {
@@ -71,12 +70,6 @@
     }
   }
 </script>
-<style lang="scss">
-  .switch {
-    top: 3px;
-    left: -2px
-  }
-</style>
 
 <style lang="scss" scoped>
   $eventsWidth: 90%;
@@ -131,32 +124,6 @@
   input {
     display: inline-block;
   }
-  .eventGui {
-    // width: $eventsWidth;
-    // margin-left: $marginCenter;
-    // height: $eventGuiHeight;
-    background-color: white;
-  }
-  .eventGui.top .filter {
-    height: 24px;
-    width: 110px;
-    border-color: transparent;
-    position: relative;
-    top: 50%;
-    margin-top: -15px;
-    outline: none;
-    background-color: transparent;
-  }
-  .eventGui.top input:active {
-    border: none;
-  }
-  // .eventPage {
-  //   max-width: 100vw;
-  //   width: 100vw;
-  //   height: 100vh;
-  //   max-height: 100vh;
-  //   background-color: #EBEEF7;
-  // }
   .events-wrap {
     height: 75vh;
     background-color: white;
@@ -169,16 +136,5 @@
   .events::-webkit-scrollbar {
     width: 0px; 
     background-color: rgba(0,0,0,0);
-  }
-  .eventGui.bottom {
-    font-size: 15px;
-    height: 28px;
-    font-family: Lato,sans-serif;
-    font-weight: 700;
-    vertical-align: middle;
-  }
-  .eventGui.bottom * {
-    position: relative;
-    top: 4px;
   }
 </style>

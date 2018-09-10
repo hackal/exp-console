@@ -1,6 +1,6 @@
 <template>
-  <label class="switch">
-    <input type="checkbox">
+  <label class="switch" :style='calcPos'>
+    <input v-model='switched' type="checkbox">
     <span @click='turn' class="slider round"></span>
   </label>
 </template>
@@ -9,7 +9,19 @@ export default {
   data: () => ({
     switched: false
   }),
-  computed: { },
+  props: [
+    'default',
+    'position'
+  ],
+  mounted () {
+    this.switched = this.default
+    this.$emit('onSwitch', this.switched)
+  },
+  computed: {
+    calcPos () {
+      return this.position ? { left: this.position.left + 'px', top: this.position.top + 'px' } : {}
+    }
+  },
   methods: {
     turn () {
       this.switched = !this.switched

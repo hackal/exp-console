@@ -44,7 +44,7 @@ export default class RequestProcessor {
     let data = command.data
     switch (command.name) {
       case 'crm/events':
-        timeLineItem = itemTemplate(data.type, 'event', data.properties, data.properties.path ? data.properties.path : '', new URL(data.properties.location).host, {}, data.timestamp)
+        timeLineItem = itemTemplate(data.type, 'event', data.properties, data.properties.path ? data.properties.path : '', new URL(data.properties.location).host, {}, data.timestamp ? data.timestamp : (Date.now() / 1000))
         break
       case 'crm/customers':
         timeLineItem = itemTemplate('Update', 'update', data.properties, '', '', {}, Date.now())

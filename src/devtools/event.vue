@@ -36,9 +36,6 @@ export default {
       return ret
     },
     date () {
-      if (this.data.timeStamp === undefined) {
-        console.log(this.data)
-      }
       return dateFormat(this.data.timeStamp * 1000, 'mmm d,yyyy HH:MM:ss')
     }
   },

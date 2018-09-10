@@ -2,15 +2,12 @@
   <div id="root">
     <exp-gui :ids='ids'></exp-gui>
     <div class="header">
-      <div class="tab active">
-        <router-link to="/events" class="span">EVENTS</router-link>
-      </div>
-      <div class="tab">
-        <span class="span">WARNINGS</span>
-      </div>
-      <div class="tab">
-        <span class="span">SETTINGS</span>
-      </div>
+      <router-link to="/events" class="tab active">
+        <span>EVENTS</span>
+      </router-link>
+      <router-link to="/settings"  class="tab">
+        <span>SETTINGS</span>
+      </router-link>
     </div>
 
     <router-view :items='items'></router-view>
@@ -26,7 +23,8 @@
       ids: {},
       domain: '',
       requests: [],
-      items: []
+      items: [],
+      activeTab: null
     }),
     computed: { },
     created () {
@@ -45,6 +43,15 @@
         let url = new URL(data)
         this.addItems([itemTemplate('divider', 'divider', {}, url.pathname, url.host, {}, Date.now())])
       })
+      this.activeTab = document.querySelector('.tab.active')
+      let tabs = document.querySelectorAll('.tab')
+      for (let i = 0; i < tabs.length; ++i) {
+        let tab = tabs[i]
+        var vueContext = this
+        tab.onclick = function (e) {
+          vueContext.activate(e)
+        }
+      }
     },
     methods: {
       updateIds (ids) {
@@ -54,6 +61,12 @@
         for (let i = 0; i < items.length; ++i) {
           this.items.splice(0, 0, items[items.length - 1 - i])
         }
+      },
+      activate (event) {
+        let element = event.currentTarget
+        this.activeTab.classList.remove('active')
+        element.classList.add('active')
+        this.activeTab = element
       }
     },
     components: {
@@ -91,13 +104,14 @@
       border-bottom: 2px solid #ffffff;
       height: 35px;
       margin-right: 25px;
+      text-decoration: none;
+      display: block;
 
-      .span {
+      span {
         font-weight: bold;
         font-size: 11px;
         color: #636696;
         line-height: 31px;
-        text-decoration: none;
       }
 
       &.active {
