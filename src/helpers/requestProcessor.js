@@ -1,21 +1,20 @@
-import itemTemplate from '../devtools/timeLineItem.js'
+import Item from '../ext/timeLineItem.js'
 import Log from '../ext/logger.js'
 export default class RequestProcessor {
   constructor (updateIdsCallback) {
     this.__updateIdsCallback = updateIdsCallback
     this.__ids = {}
     this.__loggerTag = 'RequestProcessor'
+    this.__onBulkProcessed = function () {}
   }
 
   processRequest (details) {
     let reqInfo = {
       valid: false,
-      items: [],
-      parsed_body: null
+      items: []
     }
     if (details.body) {
       let body = details.body
-      reqInfo.parsed_body = body
       if (/\/bulk$/.test(details.url)) {
         let firstData = body.commands[0].data
         this.updateIds(firstData.customer_ids === undefined ? firstData.ids : firstData.customer_ids)
@@ -30,6 +29,7 @@ export default class RequestProcessor {
             reqInfo.valid = true
           }
         }
+        this.__onBulkProcessed.call(this.__errorCatcher, details, reqInfo.items)
       } else {
       }
     } else if (details.method === 'POST') {
@@ -44,14 +44,15 @@ export default class RequestProcessor {
     let data = command.data
     switch (command.name) {
       case 'crm/events':
-        timeLineItem = itemTemplate(data.type, 'event', data.properties, data.properties.path ? data.properties.path : '', new URL(data.properties.location).host, {}, data.timestamp ? data.timestamp : (Date.now() / 1000))
+        timeLineItem = new Item(data.type, 'event', data.properties, data.properties.path ? data.properties.path : '', new URL(data.properties.location).host, [], data.timestamp ? data.timestamp : (Date.now() / 1000))
         break
       case 'crm/customers':
-        timeLineItem = itemTemplate('Update', 'update', data.properties, '', '', {}, Date.now())
+        timeLineItem = new Item('Update', 'update', data.properties, '', '', [], Date.now())
         break
       default:
-        timeLineItem = -1
+        return -1
     }
+    command.id = timeLineItem.getId()
     return timeLineItem
   }
 
@@ -68,5 +69,10 @@ export default class RequestProcessor {
     if (update) {
       this.__updateIdsCallback(updatedIds)
     }
+  }
+
+  catchErrors (errorCatcher) {
+    this.__errorCatcher = errorCatcher
+    this.__onBulkProcessed = errorCatcher.onBulkProcessed
   }
 }

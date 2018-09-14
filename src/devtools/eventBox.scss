@@ -1,3 +1,28 @@
+.icon-errors {
+  width: 11px;
+  height: 10px;
+  float: right;
+  position: relative;
+  top: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+
+  .tooltip {
+    background-color: #1C1733;
+    position: static;
+    display: none;
+    margin-left: -260px;
+    margin-top: -50px;
+    color: white;
+    padding: 12px;
+  }
+}
+
+.icon-errors:hover .tooltip {
+  position: fixed;
+  display: block;
+}
+
 .eventBody {
   width: 100%;
   font-size: 17px;

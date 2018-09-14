@@ -14,9 +14,11 @@
   </div>
 </template>
 <script>
-  import itemTemplate from './timeLineItem.js'
+  import Item from '../ext/timeLineItem.js'
   import RequestProcessor from '../helpers/requestProcessor.js'
   import Gui from './gui.vue'
+  import ErrorCatcher from '../helpers/errorCatcher.js'
+  import ErrorList from '../ext/filters.js'
 
   export default {
     data: () => ({
@@ -29,9 +31,10 @@
     computed: { },
     created () {
       this.$router.push('/events')
+      this.requestProcessor = new RequestProcessor(this.updateIds)
+      this.requestProcessor.catchErrors(new ErrorCatcher(ErrorList.get()))
     },
     mounted () {
-      this.requestProcessor = new RequestProcessor(this.updateIds)
       this.$bus.$on('request', (data) => {
         let request = this.requestProcessor.processRequest(data)
         if (request.valid) {
@@ -41,7 +44,7 @@
 
       this.$bus.$on('navigate', (data) => {
         let url = new URL(data)
-        this.addItems([itemTemplate('divider', 'divider', {}, url.pathname, url.host, {}, Date.now())])
+        this.addItems([new Item('divider', 'divider', {}, url.pathname, url.host, [], Date.now())])
       })
       this.activeTab = document.querySelector('.tab.active')
       let tabs = document.querySelectorAll('.tab')
