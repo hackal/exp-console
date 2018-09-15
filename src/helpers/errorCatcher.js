@@ -101,5 +101,6 @@ export default class ErrorCatcher {
           break
       }
     }
+    return retVal
   }
 }

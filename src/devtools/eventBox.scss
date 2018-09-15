@@ -9,19 +9,20 @@
 
   .tooltip {
     background-color: #1C1733;
-    position: static;
+    position: absolute;
     display: none;
-    margin-left: -260px;
-    margin-top: -50px;
     color: white;
+    position: absolute;
     padding: 12px;
+    z-index: 20;
+
+    .tooltip-row {
+      display: inline-block;
+      width: max-content;
+    }
   }
 }
 
-.icon-errors:hover .tooltip {
-  position: fixed;
-  display: block;
-}
 
 .eventBody {
   width: 100%;
