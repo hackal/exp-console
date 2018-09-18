@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <exp-gui :ids='ids'></exp-gui>
+    <exp-gui :ids='ids' :info='guiExtraInfo'></exp-gui>
     <div class="header">
       <router-link to="/events" class="tab active">
         <span>EVENTS</span>
@@ -23,10 +23,13 @@
   export default {
     data: () => ({
       ids: {},
-      domain: '',
       requests: [],
       items: [],
-      activeTab: null
+      activeTab: null,
+      guiExtraInfo: {
+        token: '',
+        apiDomain: ''
+      }
     }),
     computed: { },
     created () {
@@ -38,6 +41,7 @@
       this.$bus.$on('request', (data) => {
         let request = this.requestProcessor.processRequest(data)
         if (request.valid) {
+          this.guiExtraInfo.token = request.projectToken
           this.addItems(request.items)
         }
       })
@@ -58,7 +62,7 @@
     },
     methods: {
       updateIds (ids) {
-        this.ids = ids
+        this.ids = this.updateObj(this.ids, ids)
       },
       addItems (items) {
         for (let i = 0; i < items.length; ++i) {
@@ -70,6 +74,12 @@
         this.activeTab.classList.remove('active')
         element.classList.add('active')
         this.activeTab = element
+      },
+      updateObj (target, o) {
+        for (let key in o) {
+          this.$set(target, key, o[key])
+        }
+        return target
       }
     },
     components: {

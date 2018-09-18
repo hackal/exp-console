@@ -4,7 +4,13 @@
           <span class='circle' :style='circleStyle'></span>
           <span class='name'>update</span>
           <span class='timestamp'>{{ date }}</span>
-          <div class='icon-errors' :style='warningStyle' v-if='data.errors.length > 0'>
+          <div class='icon-errors' :style='warningStyle' v-if='data.errors.length > 0' @mouseover='calculatePosition($event.currentTarget)' @mouseout='cancelTooltip($event.currentTarget)'>
+            <div class='tooltip'>
+              <div class='tooltip-row' v-for='(e,index) in data.errors' :key='index'>
+                <span>{{ e.msg }}</span>
+              </div>
+              <br>
+            </div>
           </div>
         </div>
         <div class='properties' v-if='rolledOut'>
@@ -48,6 +54,20 @@ export default {
   methods: {
     expand () {
       this.rolledOut = !this.rolledOut
+    },
+    calculatePosition (rootEl) {
+      if (this.calculated) return
+      let tooltip = rootEl.querySelector('.tooltip')
+      tooltip.style.position = 'absolute'
+      tooltip.style.display = 'block'
+      tooltip.style.right = (tooltip.offsetWidth / 10) + 'px'
+      tooltip.style.top = (tooltip.offsetHeight / 10) + 'px'
+      this.calculated = true
+    },
+    cancelTooltip (rootEl) {
+      this.calculated = false
+      let tooltip = rootEl.querySelector('.tooltip')
+      tooltip.style.display = 'none'
     }
   }
 }

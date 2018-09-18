@@ -11,14 +11,15 @@ export default class RequestProcessor {
   processRequest (details) {
     let reqInfo = {
       valid: false,
-      items: []
+      items: [],
+      projectToken: null
     }
-    if (details.body) {
-      let body = details.body
+    let body = details.body
+    if (body) {
+      let firstData = body.commands ? body.commands[0].data : {}
+      reqInfo.projectToken = body.company_id || firstData.company_id || body.project_id
+      this.updateIds(firstData.ids || firstData.customer_ids || body.customer_ids)
       if (/\/bulk$/.test(details.url)) {
-        let firstData = body.commands[0].data
-        this.updateIds(firstData.customer_ids === undefined ? firstData.ids : firstData.customer_ids)
-
         for (let i = 0; i < body.commands.length; ++i) {
           let command = body.commands[i]
           let item = this.processBasicCommand(command)

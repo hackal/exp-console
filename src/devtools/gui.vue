@@ -2,24 +2,35 @@
   <div id='root-gui' @mouseover='expanded = true; toggleClass(expanded)' @mouseleave='expanded = false; toggleClass(expanded)'>
     <div class='gui-expanded'>
       <input type="text" id='copy-to-clip'>
-      <div v-for='(key, index) in ids' :key='index' class='gui-row'>
-      <div class='gui-key'>
-        <span>
-          {{ index }}
-        </span>
+      <div class='ids'>
+        <div v-for='(key, index) in ids' :key='index' class='gui-row'>
+          <div class='gui-key'>
+            <span>
+              {{ index }}
+            </span>
+          </div>
+          <div class='gui-id' @click='copy(key)'>
+            <span>
+              {{ key }}
+            </span>
+          </div>
+          <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" @click='copy(key)'><path d="M22 6v16h-16v-16h16zm2-2h-20v20h20v-20zm-24 17v-21h21v2h-19v19h-2z"/></svg>
+        </div>
       </div>
-      <div class='gui-id' @click='copy(key)'>
-        <span>
-          {{ key }}
-        </span>
+      <div class='ids-left'>
+        <div class='customer-button' v-if='showGui' @click='takeToApp()'>
+          <span>customer</span>
+        </div>
+        <span v-if='responseMsg'>{{ responseMsg }}</span>
       </div>
-      <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" @click='copy(key)'><path d="M22 6v16h-16v-16h16zm2-2h-20v20h20v-20zm-24 17v-21h21v2h-19v19h-2z"/></svg>
-    </div>
     <div class="separator"></div>
     </div>
   </div>
 </template>
 <script>
+import Storage from '../helpers/storage.js'
+const storage = new Storage()
+
 export default {
   data () {
     return {
@@ -27,7 +38,15 @@ export default {
       rootEl: null,
       contractedHeight: 0,
       expandedHeight: 0,
-      copyEl: null
+      copyEl: null,
+      responseMsg: null
+    }
+  },
+  computed: {
+    showGui () {
+      let length = 0
+      for (let key in this.ids) { if (this.ids.hasOwnProperty(key)) length++ }
+      return length > 0
     }
   },
   methods: {
@@ -38,6 +57,31 @@ export default {
       this.copyEl.value = text
       this.copyEl.select()
       document.execCommand('copy')
+    },
+    takeToApp () {
+      storage.getCompanies().then((companies) => {
+        if (!this.info.token) {
+          this.responseMsg = 'None project token, try to reload the page'
+          return
+        }
+        let slug = this.linkProjectToken(this.info.token, companies)
+        if (!slug) {
+          this.responseMsg = 'You dont have access'
+          return
+        }
+        let query = this.ids.cookie || this.ids[Object.keys(this.info.ids)[0]]
+        if (!query) {
+          this.responseMsg = 'You are not identified'
+        }
+        let appUrl = 'https://' + 'app.exponea' + '.com/p/' + slug + '/crm/customers/pages/1?query=' + query
+        chrome.tabs.create({ active: true, url: appUrl })
+      })
+    },
+    linkProjectToken (token, companies) {
+      for (let key in companies) {
+        if (key === token) return companies[key].SLUG
+      }
+      return undefined
     }
   },
   mounted () {
@@ -45,7 +89,7 @@ export default {
     this.expandedHeight = document.getElementsByClassName('gui-row')
     this.copyEl = document.getElementById('copy-to-clip')
   },
-  props: ['ids']
+  props: ['ids', 'info']
 }
 </script>
 <style lang="scss" scoped>
@@ -59,6 +103,34 @@ export default {
 #copy-to-clip {
   position: absolute;
   z-index: -1;
+}
+
+.ids {
+  width: 60%;
+  display: inline-block;
+}
+
+.ids-left {
+  display: inline-block;
+
+  .customer-button {
+    position: relative;
+    top: 50%;
+    height: 10px;
+    margin-top: -10px;
+    margin-bottom: 5px;
+    color: #fff;
+    border: 1px solid #00a4c5;
+    background-color: #00b7db;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    padding: 2px 10px 12px 10px;
+  }
+  .customer-button:hover {
+    cursor: pointer;
+    background-color: #0096b4;
+  }
 }
 
 .copy-icon {
