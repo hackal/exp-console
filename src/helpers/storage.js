@@ -110,4 +110,22 @@ export default class Storage {
       })
     })
   }
+
+  getSettings () {
+    return new Promise((resolve, reject) => {
+      this.provider.get(['SETTINGS'], ({SETTINGS}) => {
+        if (!SETTINGS) resolve({})
+        else resolve(SETTINGS)
+      })
+    })
+  }
+
+  updateSettings (settings, callback = function () {}) {
+    this.getSettings().then((oldSettings) => {
+      let newSettings = Object.assign(oldSettings, settings)
+      this.provider.set({SETTINGS: newSettings}, () => {
+        callback()
+      })
+    })
+  }
 }

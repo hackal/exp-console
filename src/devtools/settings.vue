@@ -6,7 +6,7 @@
           <span>{{ setting.displayName }}</span>
         </div>
         <div class='setting'>
-          <component :is='setting.name' :data='settingsLoaded[setting.storageKey]' @saveSettings='(data) => { saveSettings(data, setting.storageKey) }'></component>
+          <component :is='setting.name' :promise='settings' @saveSettings='saveSettings'></component>
         </div>
       </div>
     </div>
@@ -15,18 +15,21 @@
 <script>
 import Log from '../ext/logger.js'
 import General from './settings/general.vue'
+import Storage from '../helpers/storage.js'
+import { SettingBus } from '../helpers/settingBus.js'
+
+const storage = new Storage()
 export default {
   data () {
     return {
-      registeredSettings: [],
-      settingsLoaded: {}
+      registeredSettings: []
     }
   },
   components: {
     'general-setting': General
   },
   created () {
-    this.registerComponentProperties('general-setting', 'General', 'general_settings')
+    this.registerComponentProperties('general-setting', 'General')
   },
   methods: {
     registerComponentProperties (componentName, displayName, storageKey) {
@@ -34,15 +37,15 @@ export default {
         Log('root-settings', 'Component "' + componentName + '" could not been found. Dont forget to also include it in components section', 'warn')
         return
       }
-      // to-do set setting from storage
-      this.settingsLoaded[storageKey] = {}
-
-      this.registeredSettings.push({ name: componentName, displayName: displayName, storageKey: storageKey })
+      this.registeredSettings.push({ name: componentName, displayName: displayName })
     },
-    saveSettings (settings, key) {
-      // to-do implement storage
+    saveSettings (settings) {
+      storage.updateSettings(settings, () => {
+        SettingBus.$emit('refreshSettings')
+      })
     }
-  }
+  },
+  props: ['settings']
 }
 </script>
 <style lang="scss" scoped>

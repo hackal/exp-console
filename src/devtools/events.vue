@@ -14,7 +14,7 @@
               </div>
             </div>
             <div class="event-table-header">
-              <exp-toggle @onSwitch='updateSessionFilter' :default='false' :position='{left: -2, top: 3}'></exp-toggle>
+              <exp-toggle @onSwitch='updateSessionFilter' ref='sessionSwitch' :position='{left: -2, top: 3}'></exp-toggle>
               <span> Show session events</span>
             </div>
           </div>
@@ -28,6 +28,7 @@
   import update from './update.vue'
   import divider from './divider.vue'
   import toggle from './switch.vue'
+  import Names from './settings/names.js'
 
   export default {
     data: () => ({
@@ -40,7 +41,8 @@
       sessionEventsNames: ['session_ping']
     }),
     props: [
-      'items'
+      'items',
+      'settings'
     ],
     computed: { },
     created () { },
@@ -51,6 +53,9 @@
       'exp-toggle': toggle
     },
     mounted () {
+      this.settings.then((settings) => {
+        this.$refs.sessionSwitch.set(settings[Names.show_session_events()])
+      })
     },
     methods: {
       updateSessionFilter (value) {

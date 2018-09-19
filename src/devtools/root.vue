@@ -10,7 +10,7 @@
       </router-link>
     </div>
 
-    <router-view :items='items'></router-view>
+    <router-view :items='items' :settings='settings'></router-view>
   </div>
 </template>
 <script>
@@ -19,7 +19,10 @@
   import Gui from './gui.vue'
   import ErrorCatcher from '../helpers/errorCatcher.js'
   import ErrorList from '../ext/filters.js'
+  import Storage from '../helpers/storage.js'
+  import { SettingBus } from '../helpers/settingBus.js'
 
+  const storage = new Storage()
   export default {
     data: () => ({
       ids: {},
@@ -29,13 +32,19 @@
       guiExtraInfo: {
         token: '',
         apiDomain: ''
-      }
+      },
+      settings: {}
     }),
     computed: { },
     created () {
       this.$router.push('/events')
       this.requestProcessor = new RequestProcessor(this.updateIds)
       this.requestProcessor.catchErrors(new ErrorCatcher(ErrorList.get()))
+
+      this.settings = storage.getSettings()
+      SettingBus.$on('refreshSettings', () => {
+        this.settings = storage.getSettings()
+      })
     },
     mounted () {
       this.$bus.$on('request', (data) => {
