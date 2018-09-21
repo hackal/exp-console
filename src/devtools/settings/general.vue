@@ -36,7 +36,6 @@ export default {
     }
     this.promise.then((settings) => {
       this.data = Object.assign(this.data, settings)
-      console.log(settings)
       this.$refs.showSessionDefault[0].set(this.data[Names.show_session_events()])
     })
   },
