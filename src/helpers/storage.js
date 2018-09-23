@@ -27,6 +27,22 @@ export default class Storage {
     })
   }
 
+  setDomains (list) {
+    const domainSet = new Set()
+
+    if (Array.isArray(list)) {
+      list.forEach(domain => {
+        domainSet.add(domain)
+      })
+    } else {
+      domainSet.add(list)
+    }
+
+    this.provider.set({ API_DOMAINS: Array.from(domainSet) }, () => {
+      // this.updateCB()
+    })
+  }
+
   addDomains (list) {
     this.getApiDomains().then(domains => {
       if (domains === undefined) domains = []

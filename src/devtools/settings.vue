@@ -15,6 +15,7 @@
 <script>
 import Log from '../ext/logger.js'
 import General from './settings/general.vue'
+import ApiEndPoints from './settings/endPoints'
 import Storage from '../helpers/storage.js'
 import { SettingBus } from '../helpers/settingBus.js'
 
@@ -26,10 +27,12 @@ export default {
     }
   },
   components: {
-    'general-setting': General
+    'general-setting': General,
+    'api-end-points-setting': ApiEndPoints
   },
   created () {
     this.registerComponentProperties('general-setting', 'General')
+    this.registerComponentProperties('api-end-points-setting', 'Api end points')
   },
   methods: {
     registerComponentProperties (componentName, displayName, storageKey) {
@@ -57,13 +60,13 @@ $zIndex: 1;
   background: #ffffff;
 
   .content {
-    padding: 25px;
+    padding: 5px 25px 25px 25px;
   }
 }
 
 .settings-divider {
     height: 4px;
-    margin: 10px auto 10px;
+    margin: 25px auto 10px;
     background-color: black;
     z-index: $zIndex;
 

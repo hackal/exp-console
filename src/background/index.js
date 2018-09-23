@@ -45,7 +45,6 @@ storage.onUpdate(() => {
     const filters = domains.map(domain => `*://${domain}/*`)
     apiRequest.updateFilters(filters)
   })
-
   Object.assign({}, companiesCache)
   storage.getCompanies().then(companies => {
     Object.assign(companiesCache, companies)

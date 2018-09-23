@@ -59,15 +59,6 @@
         let url = new URL(data)
         this.addItems([new Item('divider', 'divider', {}, url.pathname, url.host, [], Date.now())])
       })
-      this.activeTab = document.querySelector('.tab.active')
-      let tabs = document.querySelectorAll('.tab')
-      for (let i = 0; i < tabs.length; ++i) {
-        let tab = tabs[i]
-        var vueContext = this
-        tab.onclick = function (e) {
-          vueContext.activate(e)
-        }
-      }
     },
     methods: {
       updateIds (ids) {
@@ -136,7 +127,7 @@
         line-height: 31px;
       }
 
-      &.active {
+      &.router-link-active {
         border-bottom-color: #ffd500;
         cursor: pointer;
         span {
