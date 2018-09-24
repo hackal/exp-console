@@ -3,7 +3,10 @@
     <div class="content">
       <div class="event-table"> 
         <div class="event-table-header">
-          <input type="text" class='filter' v-model='filters.byName' placeholder='Event filter ..'>
+          <input type="text" class='filter' v-model='filters.byName' placeholder='Event filter ...'>
+          <div class='clear-btn' @click='clear()'>
+            <span>clear</span>
+          </div>
         </div>
 
         <div class="event-table-body">
@@ -71,6 +74,9 @@
           }
         }
         return true
+      },
+      clear () {
+        this.items.splice(0, this.items.length)
       }
     }
   }
@@ -121,7 +127,27 @@
         ::placeholder {
           color: #636696;
         }
+        .clear-btn:hover {
+          border: 1px solid #bec6e0;
+        }
+        .clear-btn {
+          float: right;
+          position: relative;
+          top: 14px;
+          cursor: pointer;
+          height: 18px;
+          font-size: 14px;
+          padding: 5px 10px;
+          user-select: none;
+          color: #686b9e;
+          background-color: #f8f7fd;
+          border: 1px solid #d8ddef;
+          line-height: 15px;
 
+          span {
+            line-height: 15px;
+          }
+        }
       }
       }
     }

@@ -1,8 +1,8 @@
 <template>
     <div class='update eventBody'>
-        <div @click='expand' class='clickZone'>
+        <div @click='expand' class='clickZone' ref='zone'>
           <span class='circle' :style='circleStyle'></span>
-          <span class='name'>update</span>
+          <span class='name'>{{ name }}</span>
           <span class='timestamp'>{{ date }}</span>
           <div class='icon-errors' :style='warningStyle' v-if='data.errors.length > 0' @mouseover='calculatePosition($event.currentTarget)' @mouseout='cancelTooltip($event.currentTarget)'>
             <div class='tooltip'>
@@ -25,7 +25,9 @@ export default {
   props: ['data', 'size'],
   data: function () {
     return {
-      rolledOut: false
+      rolledOut: false,
+      identify: false,
+      name: 'update'
     }
   },
   components: {
@@ -33,7 +35,7 @@ export default {
   },
   computed: {
     circleStyle () {
-      var col = 'Aqua'
+      var col = this.identify ? 'Grey' : 'Aqua'
       var ret = { 'background-color': col }
       return ret
     },
@@ -53,6 +55,7 @@ export default {
   },
   methods: {
     expand () {
+      if (this.identify) return
       this.rolledOut = !this.rolledOut
     },
     calculatePosition (rootEl) {
@@ -68,6 +71,13 @@ export default {
       this.calculated = false
       let tooltip = rootEl.querySelector('.tooltip')
       tooltip.style.display = 'none'
+    }
+  },
+  mounted () {
+    this.identify = Object.keys(this.data.value).length === 0
+    if (this.identify) {
+      this.name = 'identify'
+      this.$refs.zone.style.cursor = 'default'
     }
   }
 }
