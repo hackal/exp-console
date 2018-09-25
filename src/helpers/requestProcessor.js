@@ -48,7 +48,7 @@ export default class RequestProcessor {
         timeLineItem = new Item(data.type, 'event', data.properties, data.properties.path ? data.properties.path : '', new URL(data.properties.location).host, [], data.timestamp ? data.timestamp : (Date.now() / 1000))
         break
       case 'crm/customers':
-        timeLineItem = new Item('Update', 'update', data.properties, '', '', [], Date.now() / 1000)
+        timeLineItem = new Item('update', 'update', data.properties, '', '', [], Date.now() / 1000)
         break
       default:
         return -1
@@ -68,7 +68,7 @@ export default class RequestProcessor {
       }
     }
     if (update) {
-      this.__updateIdsCallback(updatedIds)
+      this.__updateIdsCallback(updatedIds, newIds)
     }
   }
 

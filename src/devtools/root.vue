@@ -29,6 +29,7 @@
       requests: [],
       items: [],
       activeTab: null,
+      lastHost: '',
       guiExtraInfo: {
         token: '',
         apiDomain: ''
@@ -57,12 +58,13 @@
 
       this.$bus.$on('navigate', (data) => {
         let url = new URL(data)
-        this.addItems([new Item('divider', 'divider', {}, url.pathname, url.host, [], Date.now())])
+        this.addItems([new Item('divider', 'divider', {}, url.pathname, url.host, [], Date.now() / 1000)])
       })
     },
     methods: {
-      updateIds (ids) {
-        this.ids = this.updateObj(this.ids, ids)
+      updateIds (updatedIds, completeIds) {
+        this.ids = completeIds
+        this.addItems([new Item('identify', 'update', updatedIds, '', '', [], Date.now() / 1000)])
       },
       addItems (items) {
         for (let i = 0; i < items.length; ++i) {
@@ -74,12 +76,6 @@
         this.activeTab.classList.remove('active')
         element.classList.add('active')
         this.activeTab = element
-      },
-      updateObj (target, o) {
-        for (let key in o) {
-          this.$set(target, key, o[key])
-        }
-        return target
       }
     },
     components: {

@@ -1,8 +1,8 @@
 <template>
-    <div class='update eventBody'>
+    <div class='update eventBody' v-if='Object.keys(data.value).length > 0'>
         <div @click='expand' class='clickZone' ref='zone'>
           <span class='circle' :style='circleStyle'></span>
-          <span class='name'>{{ name }}</span>
+          <span class='name'>{{ data.name }}</span>
           <span class='timestamp'>{{ date }}</span>
           <div class='icon-errors' :style='warningStyle' v-if='data.errors.length > 0' @mouseover='calculatePosition($event.currentTarget)' @mouseout='cancelTooltip($event.currentTarget)'>
             <div class='tooltip'>
@@ -26,8 +26,7 @@ export default {
   data: function () {
     return {
       rolledOut: false,
-      identify: false,
-      name: 'update'
+      identify: false
     }
   },
   components: {
@@ -55,7 +54,6 @@ export default {
   },
   methods: {
     expand () {
-      if (this.identify) return
       this.rolledOut = !this.rolledOut
     },
     calculatePosition (rootEl) {
@@ -74,11 +72,7 @@ export default {
     }
   },
   mounted () {
-    this.identify = Object.keys(this.data.value).length === 0
-    if (this.identify) {
-      this.name = 'identify'
-      this.$refs.zone.style.cursor = 'default'
-    }
+    this.identify = this.data.name === 'identify'
   }
 }
 </script>

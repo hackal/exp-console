@@ -13,8 +13,8 @@
             </div>
           </div>
         </div>
-        <div class='properties' v-if='rolledOut'>
-           <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
+        <div class='properties' v-if='isRolledOut'>
+           <exp-property v-if='isRolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
         </div>
     </div>
 </template>
@@ -56,6 +56,9 @@ export default {
     },
     date () {
       return dateFormat(this.data.timeStamp * 1000, 'mmm d,yyyy HH:MM:ss')
+    },
+    isRolledOut () {
+      return this.rolledOut
     }
   },
   methods: {
