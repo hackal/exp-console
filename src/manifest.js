@@ -2,10 +2,10 @@
  * @see {@link https://developer.chrome.com/extensions/manifest}
  */
 module.exports = {
-  name: 'exponea-console', // Vue Extension
+  name: 'Exponea Console (BETA)', // Vue Extension
   description: 'Exponea tool used for debugging', // Vue.js Webpack Chrome Extension Template
   author: 'Exponea',
-  version: '0.0.1',
+  version: '0.0.5',
   icons: {
     '16': 'icons/16.png',
     '48': 'icons/48_rounded.png',
