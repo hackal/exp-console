@@ -3,9 +3,9 @@
     <div class="content">
       <div class="event-table"> 
         <div class="event-table-header">
-          <input type="text" class='filter' v-model='filters.byName' placeholder='Event filter ...'>
+          <input type="text" class='filter' v-model='filters.byName' placeholder='Search events...'>
           <div class='clear-btn' @click='clear()'>
-            <span>clear</span>
+            <span>CLEAR</span>
           </div>
         </div>
 
@@ -17,8 +17,10 @@
               </div>
             </div>
             <div class="event-table-header">
-              <exp-toggle @onSwitch='updateSessionFilter' ref='sessionSwitch' :position='{left: -2, top: 3}'></exp-toggle>
-              <span> Show session events</span>
+              <div>
+                <exp-toggle @onSwitch='updateSessionFilter' ref='sessionSwitch' :position='{left: -2, top: 3}'></exp-toggle>
+                <span> Show session events</span>
+              </div>
             </div>
           </div>
         </div>
@@ -83,10 +85,6 @@
 </script>
 
 <style lang="scss" scoped>
-  $eventsWidth: 90%;
-  $marginCenter: 5%;
-  $eventGuiHeight: 45px;
-
   #root-events {
     width: 100%;
     height: 100%;
@@ -102,25 +100,18 @@
 
       .event-table-header {
         background-color: #F8F7FD;
-        height: 50px;
-        padding: 0 20px;
-
-        * {
-          font-size: 12px;
-          font-weight: bold;
-          line-height: 50px;
-          display: inline-block;
-        }
+        height: 40px;
+        padding: 0px 10px 0px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         .filter {
           height: 24px;
-          font-size: 14px;
+          font-size: 11px;
+          font-weight: bold;
           width: 110px;
-          border-color: transparent;
-          padding-left: 8px;
-          position: relative;
-          top: 50%;
-          margin-top: -15px;
+          border: 0;
           outline: none;
           background-color: transparent;
         }
@@ -131,12 +122,9 @@
           border: 1px solid #bec6e0;
         }
         .clear-btn {
-          float: right;
-          position: relative;
-          top: 14px;
           cursor: pointer;
-          height: 18px;
-          font-size: 14px;
+          font-weight: bold;
+          font-size: 11px;
           padding: 5px 10px;
           user-select: none;
           color: #686b9e;

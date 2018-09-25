@@ -1,8 +1,6 @@
 export default class Storage {
   constructor () {
     this.provider = chrome.storage.local
-    this.cache = [] // todo implement local caching?
-    // this.updateCB = undefined
   }
 
   onUpdate (callback) {
@@ -116,7 +114,8 @@ export default class Storage {
             TOKEN: company._id,
             API_DOMAIN: company.domain_mapping.api_domain,
             APP_DOMAIN: company.domain_mapping.app_domain,
-            SLUG: company.slug
+            SLUG: company.slug,
+            NAME: company.company_name
           }
         }
       })
@@ -142,6 +141,21 @@ export default class Storage {
       this.provider.set({SETTINGS: newSettings}, () => {
         callback()
       })
+    })
+  }
+
+  getCookie () {
+    return new Promise((resolve, reject) => {
+      this.provider.get(['COOKIE'], ({COOKIE}) => {
+        if (!COOKIE) resolve('')
+        else resolve(COOKIE)
+      })
+    })
+  }
+
+  setCookie (cookie, callback = function () {}) {
+    this.provider.set({COOKIE: cookie}, () => {
+      callback()
     })
   }
 }

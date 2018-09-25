@@ -1,6 +1,18 @@
 <template>
-    <div class='update eventBody' v-if='Object.keys(data.value).length > 0'>
-        <div @click='expand' class='clickZone' ref='zone'>
+    <div class='event' v-if='Object.keys(data.value).length > 0'>
+      <div class="event-header" @click="rolledOut = !rolledOut">
+        <span class='circle update' :style='circleStyle'></span>
+        <span class='name'>{{ data.name }}</span>
+        <span class='timestamp'>{{ date }}</span>
+      </div>
+      <div class="event-body" v-if="rolledOut">
+        <div class="properties">
+           <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
+        </div>
+      </div>
+
+
+        <!-- <div @click='expand' class='clickZone' ref='zone'>
           <span class='circle' :style='circleStyle'></span>
           <span class='name'>{{ data.name }}</span>
           <span class='timestamp'>{{ date }}</span>
@@ -15,7 +27,7 @@
         </div>
         <div class='properties' v-if='rolledOut'>
            <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>

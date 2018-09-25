@@ -32,7 +32,7 @@ export default {
   },
   created () {
     this.registerComponentProperties('general-setting', 'General')
-    this.registerComponentProperties('api-end-points-setting', 'Api end points')
+    this.registerComponentProperties('api-end-points-setting', 'API end points')
   },
   methods: {
     registerComponentProperties (componentName, displayName, storageKey) {
@@ -56,7 +56,7 @@ $zIndex: 1;
 
 #root-settings {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: #ffffff;
 
   .content {

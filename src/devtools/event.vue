@@ -1,21 +1,15 @@
 <template>
-    <div class='event eventBody'>
-        <div @click='expand' class='clickZone'>
-          <span class='circle' :style='circleStyle'></span>
-          <span class='name'>{{ data.name }}</span>
-          <span class='timestamp'>{{ date }}</span>
-          <div class='icon-errors' :style='warningStyle' v-if='data.errors.length > 0' @mouseover='calculatePosition($event.currentTarget)' @mouseout='cancelTooltip($event.currentTarget)'>
-            <div class='tooltip'>
-              <div class='tooltip-row' v-for='(e,index) in data.errors' :key='index'>
-                <span>{{ e.msg }}</span>
-              </div>
-              <br>
-            </div>
-          </div>
-        </div>
-        <div class='properties' v-if='isRolledOut'>
+    <div class="event">
+      <div class="event-header" @click="rolledOut = !rolledOut">
+        <span class='circle' :style='circleStyle'></span>
+        <span class='name'>{{ data.name }}</span>
+        <span class='timestamp'>{{ date }}</span>
+      </div>
+      <div class="event-body" v-if="rolledOut">
+        <div class="properties">
            <exp-property v-if='isRolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
         </div>
+      </div>
     </div>
 </template>
 
@@ -26,7 +20,7 @@ export default {
   props: ['data', 'size'],
   data () {
     return {
-      colors: ['yellow', 'red', 'blue', 'limegreen', 'black', 'fuchsia', 'orange'],
+      colors: ['#FFEB3B', '#f44336', '#2196F3', '#CDDC39', '#4CAF50', '#9C27B0', '#FF9800'],
       rolledOut: false,
       calculated: false
     }

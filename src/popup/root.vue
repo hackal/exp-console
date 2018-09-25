@@ -16,18 +16,17 @@
 
 </template>
 <script>
-  export default {
-    data: () => ({
-    }),
-    computed: { },
-    created () { },
-    mounted () { },
-    methods: {
-      tab () {
-        chrome.tabs.create({ url: 'pages/app.html' })
-      }
+import Exponea from '../helpers/exponea-sdk.js'
+export default {
+  data () {
+    return {
+      exponea: new Exponea()
     }
+  },
+  mounted () {
+    this.exponea.trackEvent('open_popup')
   }
+}
 </script>
 
 <style lang="scss">

@@ -4,7 +4,10 @@ import Bus from '../helpers/bus.js'
 import VueRouter from 'vue-router'
 import Events from './events.vue'
 import Settings from './settings.vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(ElementUI)
 Vue.use(VueRouter)
 const routes = [
   { path: '/events', component: Events },
