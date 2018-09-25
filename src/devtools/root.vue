@@ -70,12 +70,6 @@
         for (let i = 0; i < items.length; ++i) {
           this.items.splice(0, 0, items[items.length - 1 - i])
         }
-      },
-      activate (event) {
-        let element = event.currentTarget
-        this.activeTab.classList.remove('active')
-        element.classList.add('active')
-        this.activeTab = element
       }
     },
     components: {

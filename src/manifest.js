@@ -26,7 +26,7 @@ module.exports = {
     'storage'
   ],
   browser_action: {
-    default_title: 'Exponea console',
+    default_title: 'Exponea Console (BETA)',
     default_popup: 'pages/popup.html',
     default_icon: {
       '16': 'icons/16.png',
