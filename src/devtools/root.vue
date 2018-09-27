@@ -2,7 +2,7 @@
   <div id="root">
     <exp-gui :ids='ids' :info='guiExtraInfo'></exp-gui>
     <div class="header">
-      <router-link to="/events" class="tab active">
+      <router-link to="/events" class="tab">
         <span>EVENTS</span>
       </router-link>
       <router-link to="/settings"  class="tab">
@@ -54,6 +54,10 @@
           this.guiExtraInfo.token = request.projectToken
           this.addItems(request.items)
         }
+      })
+
+      this.$bus.$on('error', code => {
+        console.log(code)
       })
 
       this.$bus.$on('navigate', (data) => {

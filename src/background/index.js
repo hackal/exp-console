@@ -58,6 +58,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 
 apiRequest.beforeRequest((details) => {
+  console.log(details)
   const tabId = details.tabId
   const data = {
     method: details.method,
@@ -85,6 +86,10 @@ apiRequest.completed((details) => {
     statusCode: details.statusCode,
     statusLine: details.statusLine,
     timeStamp: details.timeStamp
+  }
+
+  if (details.statusCode !== 200) {
+    bus.$emit('error', details.statusCode, tabId)
   }
 
   bus.$emit('ack', data, tabId)
