@@ -1,3 +1,13 @@
+/**
+ * Time line item structure
+ * @param {string} name
+ * @param {string} type
+ * @param {object} value
+ * @param {string} path
+ * @param {string} host
+ * @param {object} error
+ * @param {Date} timeStamp
+ */
 export default function (name, type, value, path, host, error, timeStamp) {
   if (typeof type === 'undefined') {
     return {
