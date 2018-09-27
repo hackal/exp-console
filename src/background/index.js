@@ -3,6 +3,7 @@ import Request from '../helpers/webrequest.js'
 import Hooks from '../helpers/hooks.js'
 import Bus from '../helpers/bus.js'
 import ArrayBufferConverter from '../helpers/arrayBufferConverter.js'
+import Exponea from '../helpers/exponea-sdk.js'
 
 const arrayBufferConverter = new ArrayBufferConverter()
 const storage = new Storage()
@@ -11,9 +12,15 @@ const apiRequest = new Request([])
 const extension = new Hooks()
 const companiesCache = {}
 const bus = new Bus(true)
+const exponea = new Exponea()
 
 extension.onInstall(() => {
+  exponea.trackEvent('install_extension')
   storage.addDomains(['api.exponea.com', 'api.infinario.com'])
+})
+
+extension.onUpdate(() => {
+  exponea.trackEvent('update_extension')
 })
 
 extension.onSuspend(() => {
@@ -27,6 +34,7 @@ appRequest.completed((details) => {
   chrome.tabs.sendMessage(tabId, { type: 'APP_LOAD', request: details }, (response) => {
     if (response === undefined) return false
     const companies = response.companies
+    exponea.trackEvent('update_companies')
     if (companies !== undefined) storage.updateCompanies(companies)
   })
 })

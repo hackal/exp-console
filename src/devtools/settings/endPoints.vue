@@ -2,11 +2,20 @@
 
 <div id='root-end-points'>
   <div class='head'>
-    <span class='title'>Here you can update from which api-end-points we will track data<br>Sometimes you will need to restart chrome in order to save changes</span>
+    <span class='title'>Exponea Console will automatically detect endpoints. The endpoints are detected by visiting the Exponea App. If you do not see your endpoint add it manually.</span>
   </div>
   <div class='body'>
-    <textarea spellcheck="false" name="" id="" rows="4" class="end-points" @focusout='updateDomains()' v-model='inputText'></textarea>
-    <span class='hint'>seperate domains with ";"</span>
+    <div class="endpoint-wrapper">
+      <div v-for="(endpoint, index) in endpoints" :key="index" class="endpoint">
+        <span>- {{ endpoint }}</span>
+        <span @click="deleteEndpoint(endpoint)"><i class="el-icon-delete"></i></span>
+      </div>
+    </div>
+    <div class="endpoint-adder">
+      <el-input size="mini" placeholder="Add new endpoint" v-model="endpoint" @keyup.enter.native="addEndpoint">
+        <el-button slot="append" icon="el-icon-plus" type="primary" @click="addEndpoint"></el-button>
+      </el-input>
+    </div>
   </div>
 </div>  
 
@@ -21,18 +30,33 @@ export default {
     return {
       settings: {},
       inputSettingName: Names.api_end_points(),
-      inputText: ''
+      endpoints: [],
+      endpoint: ''
     }
   },
-  created () {
-    storage.getApiDomains().then((list) => {
-      this.inputText = list.toString().replace(',', ';') + ';'
+  mounted () {
+    storage.onUpdate(() => {
+      this.loadEndpoints()
     })
-    this.promise.then((settings) => {
-      this.settings = settings
-    })
+    this.loadEndpoints()
   },
   methods: {
+    loadEndpoints () {
+      this.endpoints.splice(0, this.endpoints.length)
+      storage.getApiDomains().then((list) => {
+        list.forEach(endpoint => {
+          this.endpoints.push(endpoint)
+        })
+      })
+    },
+    addEndpoint () {
+      if (this.endpoint === '') return
+      storage.addDomains([this.endpoint])
+      this.endpoint = ''
+    },
+    deleteEndpoint (endpoint) {
+      storage.deleteDomains([endpoint])
+    },
     saveSettings (value, key) {
       this.settings[key] = value
       this.$emit('saveSettings', this.settings)
@@ -60,8 +84,7 @@ export default {
   .head {
     margin: 5px 0px 10px 0px;
     .title {
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 14px;
     }
   }
 
@@ -73,11 +96,33 @@ export default {
       color: #636696;
     }
 
-    .end-points {
-      display: block;
-      resize: none;
-      width: 100%;
-      font-size: 14px;
+    .endpoint {
+      padding: 2px 0;
+      font-size: 12px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      &:hover {
+        // background
+
+        i {
+          display: block;
+        }
+      }
+
+      i {
+        display: none;
+        margin-left: 5px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .endpoint-wrapper {
+      margin-bottom: 10px;
     }
   }
   

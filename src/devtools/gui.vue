@@ -61,11 +61,11 @@ export default {
     takeToApp () {
       storage.getCompanies().then((companies) => {
         if (!this.info.token) {
-          this.responseMsg = 'None project token, try to reload the page'
+          this.responseMsg = 'No project token, try to reload the page'
           return
         }
-        let slug = this.linkProjectToken(this.info.token, companies)
-        if (!slug) {
+        let project = this.linkProjectToken(this.info.token, companies)
+        if (!project) {
           this.responseMsg = 'You dont have access'
           return
         }
@@ -73,13 +73,15 @@ export default {
         if (!query) {
           this.responseMsg = 'You are not identified'
         }
-        let appUrl = 'https://' + 'app.exponea' + '.com/p/' + slug + '/crm/customers/pages/1?query=' + query
+        let appUrl = 'https://' + project.APP_DOMAIN + '/p/' + project.SLUG + '/crm/customers/pages/1?query=' + query
         chrome.tabs.create({ active: true, url: appUrl })
       })
     },
     linkProjectToken (token, companies) {
       for (let key in companies) {
-        if (key === token) return companies[key].SLUG
+        if (key === token) {
+          return companies[key]
+        }
       }
       return undefined
     }

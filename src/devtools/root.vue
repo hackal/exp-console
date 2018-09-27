@@ -8,9 +8,28 @@
       <router-link to="/settings"  class="tab">
         <span>SETTINGS</span>
       </router-link>
+      <a @click="feedbackDialog = true" class="tab">
+        <span>FEEDBACK</span>
+      </a>
     </div>
 
     <router-view :items='items' :settings='settings'></router-view>
+
+    <el-dialog
+      title="Feedback and Suggestions"
+      :visible.sync="feedbackDialog"
+      width="70%">
+      <el-input
+        type="textarea"
+        :rows="5"
+        placeholder="Your message"
+        v-model="feedbackMessage">
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="feedbackDialog = false">Cancel</el-button>
+        <el-button size="small" type="primary" @click="submitFeedback">Submit Feedback</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -21,6 +40,7 @@
   import ErrorList from '../ext/filters.js'
   import Storage from '../helpers/storage.js'
   import { SettingBus } from '../helpers/settingBus.js'
+  import Exponea from '../helpers/exponea-sdk.js'
 
   const storage = new Storage()
   export default {
@@ -34,7 +54,10 @@
         token: '',
         apiDomain: ''
       },
-      settings: {}
+      settings: {},
+      feedbackDialog: false,
+      feedbackMessage: '',
+      exponea: new Exponea()
     }),
     computed: { },
     created () {
@@ -48,6 +71,7 @@
       })
     },
     mounted () {
+      this.exponea.trackEvent('open_devtools')
       this.$bus.$on('request', (data) => {
         let request = this.requestProcessor.processRequest(data)
         if (request.valid) {
@@ -61,11 +85,19 @@
       })
 
       this.$bus.$on('navigate', (data) => {
-        let url = new URL(data)
-        this.addItems([new Item('divider', 'divider', {}, url.pathname, url.host, [], Date.now() / 1000)])
+        // let url = new URL(data) // todo remove this, just display url
+        this.addItems([new Item('divider', 'divider', {}, data, data, [], Date.now() / 1000)])
       })
     },
     methods: {
+      submitFeedback () {
+        this.exponea.trackEvent('feedback', { feedback: this.feedbackMessage })
+        this.feedbackDialog = false
+        this.$message({
+          message: 'Thank you for your feedback. 😍😍😍',
+          type: 'success'
+        })
+      },
       updateIds (updatedIds, completeIds) {
         this.ids = completeIds
         this.addItems([new Item('identify', 'update', updatedIds, '', '', [], Date.now() / 1000)])
@@ -74,12 +106,6 @@
         for (let i = 0; i < items.length; ++i) {
           this.items.splice(0, 0, items[items.length - 1 - i])
         }
-      },
-      activate (event) {
-        let element = event.currentTarget
-        this.activeTab.classList.remove('active')
-        element.classList.add('active')
-        this.activeTab = element
       }
     },
     components: {
@@ -87,12 +113,19 @@
     }
   }
 </script>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+</style>
+
 <style lang="scss" scoped>
   @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
   * {
     font-family: 'Lato', sans-serif;
-    padding: 0;
-    margin: 0;
+    // padding: 0;
+    // margin: 0;
     box-sizing: border-box;
   }
 

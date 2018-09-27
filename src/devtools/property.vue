@@ -72,15 +72,13 @@ export default {
 .property {
   max-height: 200px;
   overflow: hidden;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 6px 0;
 }
 .name {
   display: inline-block;
-  width: 35%;
+  width: 33%;
   min-width: 150px;
   text-align: left;
-  margin-left: 15px;
 }
 .value {
   display: inline-table;
