@@ -1,37 +1,30 @@
 <template>
   <div class='divider'>
-    <hr class='hLine'>
-    <span class='path'>{{ displayPath }}</span>
+    <div class="divider-body">
+      <p><span>Navigated to:</span> {{ data.host }}</p>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  props: ['data'],
-  computed: {
-    displayPath () {
-      return this.data.host + this.data.path
-    }
-  }
+  props: ['data']
 }
 </script>
 <style lang="scss" scoped>
-$zIndex: 1;
-
+// TODO add url params as attributes
 .divider {
-  margin: 20px;
-}
-.hLine {
-  z-index: $zIndex;
-  opacity: 0.5;
-}
-.path {
-  position: relative;
-  float: right;
-  bottom: 18px;
-  font-size: 15px;
-  background-color: white;
-  z-index: $zIndex + 1;
-  padding: 0 5px 0 5px;
+  border-bottom: 1px solid #ebeef7;
+  padding: 0 0 0 15px;
+  background: #F8F7FD;
+  height: 40px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  p span {
+    font-weight: normal;
+    color:#636696;
+  }
 }
 </style>
 

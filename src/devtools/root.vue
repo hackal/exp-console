@@ -1,70 +1,141 @@
 <template>
   <div id="root">
+    <exp-gui :ids='ids' :info='guiExtraInfo'></exp-gui>
     <div class="header">
-      <div class="tab active">
-        <router-link to="/events" class="span">EVENTS</router-link>
-      </div>
-      <div class="tab">
-        <span class="span">WARNINGS</span>
-      </div>
-      <div class="tab">
-        <span class="span">SETTINGS</span>
-      </div>
+      <router-link to="/events" class="tab">
+        <span>EVENTS</span>
+      </router-link>
+      <router-link to="/settings"  class="tab">
+        <span>SETTINGS</span>
+      </router-link>
+      <a @click="feedbackDialog = true" class="tab">
+        <span>FEEDBACK</span>
+      </a>
     </div>
 
-    <router-view></router-view>
+    <router-view :items='items' :settings='settings'></router-view>
+
+    <el-dialog
+      title="Feedback and Suggestions"
+      :visible.sync="feedbackDialog"
+      width="70%">
+      <el-input
+        type="textarea"
+        :rows="5"
+        placeholder="Your message"
+        v-model="feedbackMessage">
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="feedbackDialog = false">Cancel</el-button>
+        <el-button size="small" type="primary" @click="submitFeedback">Submit Feedback</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-  import itemTemplate from './timeLineItem.js'
+  import Item from '../ext/timeLineItem.js'
   import RequestProcessor from '../helpers/requestProcessor.js'
+  import Gui from './gui.vue'
+  import ErrorCatcher from '../helpers/errorCatcher.js'
+  import ErrorList from '../ext/filters.js'
+  import Storage from '../helpers/storage.js'
+  import { SettingBus } from '../helpers/settingBus.js'
+  import Exponea from '../helpers/exponea-sdk.js'
 
+  const storage = new Storage()
   export default {
     data: () => ({
       ids: {},
-      domain: '',
       requests: [],
-      items: null
+      items: [],
+      activeTab: null,
+      lastHost: '',
+      guiExtraInfo: {
+        token: '',
+        apiDomain: ''
+      },
+      settings: {},
+      feedbackDialog: false,
+      feedbackMessage: '',
+      exponea: new Exponea()
     }),
     computed: { },
     created () {
       this.$router.push('/events')
+      this.requestProcessor = new RequestProcessor(this.updateIds)
+      this.requestProcessor.catchErrors(new ErrorCatcher(ErrorList.get()))
+
+      this.settings = storage.getSettings()
+      SettingBus.$on('refreshSettings', () => {
+        this.settings = storage.getSettings()
+      })
     },
     mounted () {
-      this.requestProcessor = new RequestProcessor(this.updateIds)
+      this.exponea.trackEvent('open_devtools')
       this.$bus.$on('request', (data) => {
         let request = this.requestProcessor.processRequest(data)
         if (request.valid) {
+          this.guiExtraInfo.token = request.projectToken
           this.addItems(request.items)
         }
       })
 
+      this.$bus.$on('error', code => {
+        console.log(code)
+      })
+
       this.$bus.$on('navigate', (data) => {
-        let url = new URL(data)
-        this.addItems([itemTemplate('divider', 'divider', {}, url.pathname, url.host, {}, Date.now())])
+        // let url = new URL(data) // todo remove this, just display url
+        this.addItems([new Item('divider', 'divider', {}, data, data, [], Date.now() / 1000)])
       })
     },
     methods: {
-      updateIds (ids) {
+      submitFeedback () {
+        this.exponea.trackEvent('feedback', { feedback: this.feedbackMessage })
+        this.feedbackDialog = false
+        this.$message({
+          message: 'Thank you for your feedback. 😍😍😍',
+          type: 'success'
+        })
+      },
+      updateIds (updatedIds, completeIds) {
+        this.ids = completeIds
+        this.addItems([new Item('identify', 'update', updatedIds, '', '', [], Date.now() / 1000)])
       },
       addItems (items) {
-        this.$eventsProps.items = items.concat(this.$eventsProps.items)
+        for (let i = 0; i < items.length; ++i) {
+          this.items.splice(0, 0, items[items.length - 1 - i])
+        }
       }
+    },
+    components: {
+      'exp-gui': Gui
     }
   }
 </script>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+</style>
+
 <style lang="scss" scoped>
   @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
   * {
     font-family: 'Lato', sans-serif;
-    padding: 0;
-    margin: 0;
+    // padding: 0;
+    // margin: 0;
     box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
   }
 
   #root {
     width: 100%;
-    min-height: 100vh;
+    max-height: 100vh;
     background: #EDEEF7;
   }
 
@@ -79,16 +150,17 @@
       border-bottom: 2px solid #ffffff;
       height: 35px;
       margin-right: 25px;
+      text-decoration: none;
+      display: block;
 
-      .span {
+      span {
         font-weight: bold;
         font-size: 11px;
         color: #636696;
         line-height: 31px;
-        text-decoration: none;
       }
 
-      &.active {
+      &.router-link-active {
         border-bottom-color: #ffd500;
         cursor: pointer;
         span {
