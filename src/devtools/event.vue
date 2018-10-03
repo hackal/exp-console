@@ -1,13 +1,13 @@
 <template>
     <div class="event">
-      <div class="event-header" @click="rolledOut = !rolledOut">
+      <div class="event-header" @click="expand()">
         <span class='circle' :style='circleStyle'></span>
         <span class='name'>{{ data.name }}</span>
         <span class='timestamp'>{{ date }}</span>
       </div>
       <div class="event-body" v-if="rolledOut">
         <div class="properties">
-           <exp-property v-if='isRolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
+           <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
         </div>
       </div>
     </div>
