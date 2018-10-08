@@ -23,7 +23,8 @@ module.exports = {
     'debugger',
     'webRequest',
     'unlimitedStorage',
-    'storage'
+    'storage',
+    'cookies'
   ],
   browser_action: {
     default_title: 'Exponea Console (BETA)',

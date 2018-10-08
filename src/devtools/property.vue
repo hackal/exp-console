@@ -36,6 +36,10 @@ export default {
           retVal = ' '
           break
         case 'object':
+          if (value === null) {
+            retVal = 'null'
+            break
+          }
           if (value.constructor.name === 'Object') {
             retVal = '{ '
             var first = true

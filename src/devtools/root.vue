@@ -133,10 +133,15 @@ body {
     margin: 0;
   }
 
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+ 
   #root {
     width: 100%;
-    max-height: 100vh;
+    height: 100vh;
     background: #EDEEF7;
+    overflow-y: hidden;
   }
 
   .header {

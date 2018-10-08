@@ -1,11 +1,13 @@
 <template>
   <div class='divider' @click='expand'>
     <div class='divider-body'>
-      <p>
+      <div>
         <span class='name'>Navigated to:</span>
-        <span class='url'> {{ display }}</span>
-      </p>
-      <span v-if='!rolledOut && hasParams' class='arrow'>«</span>
+        <div class='right'>
+          <span class='url'> {{ display }}</span>
+          <span v-if='hasParams' class='arrow' :style='arrowStyle'>«</span>
+        </div>
+      </div>
     </div>
     <div class="properties" v-if='rolledOut && hasParams'>
       <exp-property :key='index' v-for='(p,index) in params' :name='index' :value='p' ></exp-property>
@@ -39,6 +41,13 @@ export default {
       end = end === -1 ? path.length : end
       path = path.substring(0, end)
       return path
+    },
+    arrowStyle () {
+      if (this.rolledOut) {
+        return { 'transform': 'rotate(-270deg)', 'right': '3px' }
+      } else {
+        return { 'transform': 'rotate(-90deg)' }
+      }
     },
     hasParams () {
       return Object.keys(this.params).length > 0
@@ -86,21 +95,22 @@ export default {
   .arrow {
     font-size: 20px;
     color:#636696;
-    position: absolute;
-    left: 49%;
-    bottom: 0;
-    transform: rotate(-90deg);
+    float: right;
+    position: relative;
+    top: -5px;
+    right: 10px;
+    margin-left: 5px;
     user-select: none;
   }
-  p {
-    margin: 0;
+  .right {
+    display: inline-block;
+    float: right;
   }
-  p .name {
+  .name {
     font-weight: normal;
     color:#636696;
   }
-  p .url {
-    float: right;
+  .url {
     margin-right: 10px;
     font-weight: bold;
   }

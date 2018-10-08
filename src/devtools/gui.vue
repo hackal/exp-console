@@ -1,7 +1,6 @@
 <template>
-  <div id='root-gui' @mouseover='expanded = true; toggleClass(expanded)' @mouseleave='expanded = false; toggleClass(expanded)'>
-    <div class='gui-expanded'>
-      <input type="text" id='copy-to-clip'>
+  <div id='root-gui' @mouseover='expanded = true;' @mouseleave='expanded = false;' :style='rootStyle'>
+    <div class='gui-hidden'>
       <div class='ids'>
         <div v-for='(key, index) in ids' :key='index' class='gui-row'>
           <div class='gui-key'>
@@ -18,12 +17,16 @@
         </div>
       </div>
       <div class='ids-left'>
-        <div class='customer-button' v-if='showGui' @click='takeToApp()'>
-          <span>customer</span>
-        </div>
-        <span v-if='responseMsg'>{{ responseMsg }}</span>
+      <input type="text" id='copy-to-clip'>
+    </div>
+    <div class='gui-expanded'>
+      <div class='button customer-button' v-if='showGui' @click='takeToApp()'>
+        <span>customer</span>
       </div>
-    <div class="separator"></div>
+      <span v-if='responseMsg'>{{ responseMsg }}</span>
+      <div class='button refresh-ids' v-if='showGui' @click='takeToApp()'>
+        <span>delete all cookies</span>
+      </div>
     </div>
   </div>
 </template>
@@ -37,9 +40,10 @@ export default {
       expanded: false,
       rootEl: null,
       contractedHeight: 0,
-      expandedHeight: 0,
+      expandedOffset: 40,
       copyEl: null,
-      responseMsg: null
+      responseMsg: null,
+      idHeight: 18.5
     }
   },
   computed: {
@@ -47,6 +51,14 @@ export default {
       let length = 0
       for (let key in this.ids) { if (this.ids.hasOwnProperty(key)) length++ }
       return length > 0
+    },
+    rootStyle () {
+      let contractedHeight = Object.keys(this.ids).length * this.idHeight + 15
+      if (this.expanded) {
+        return { height: (contractedHeight + this.expandedOffset) + 'px' }
+      } else {
+        return { height: contractedHeight + 'px' }
+      }
     }
   },
   methods: {
@@ -60,6 +72,7 @@ export default {
     },
     takeToApp () {
       storage.getCompanies().then((companies) => {
+        this.responseMsg = ''
         if (!this.info.token) {
           this.responseMsg = 'No project token, try to reload the page'
           return
@@ -84,11 +97,17 @@ export default {
         }
       }
       return undefined
+    },
+    trueAnonymize (host) {
+      chrome.cookies.getAll({ domain: host }, cookies => {
+        for (let i = 0; i < cookies.length; ++i) {
+          chrome.cookies.remove({ url: 'https://' + host, name: cookies[i].name })
+        }
+      })
     }
   },
   mounted () {
     this.rootEl = document.getElementById('root-gui')
-    this.expandedHeight = document.getElementsByClassName('gui-row')
     this.copyEl = document.getElementById('copy-to-clip')
   },
   props: ['ids', 'info']
@@ -107,27 +126,43 @@ export default {
   z-index: -1;
 }
 
+.gui-hidden {
+  position: relative;
+}
 .ids {
   width: 60%;
   display: inline-block;
 }
 
-.ids-left {
+.button {
+  color: #fff;
+  border: 1px solid #00a4c5;
+  box-sizing: border-box;
+  background-color: #00b7db;
+  text-align: center;
   display: inline-block;
+  font-size: 16px;
+  padding: 2px 10px 2px 10px;
+}
 
+.gui-expanded {
+  display: block;
+  position: relative;
+  padding: 10px 15%;
+  
   .customer-button {
-    position: relative;
-    top: 50%;
-    height: 10px;
-    margin-top: -10px;
     margin-bottom: 5px;
-    color: #fff;
-    border: 1px solid #00a4c5;
-    background-color: #00b7db;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
-    padding: 2px 10px 12px 10px;
+    width: 160px;
+  }
+  .refresh-ids {
+    background-color: rgb(197, 9, 9);
+    border: 1px solid rgb(161, 10, 10);
+    float: right;
+    width: 160px;
+  }
+  .refresh-ids:hover {
+    cursor: pointer;
+    background-color:  rgb(167, 15, 15);
   }
   .customer-button:hover {
     cursor: pointer;
@@ -195,11 +230,16 @@ export default {
   line-height: 17px;
 }
 
-.separator {
-  height: 1px;
-  width: 100%;
-  background-color: #EDEEF7;
-  box-shadow: inset 0 1px 3px 0 rgba(0,0,0,0.1);
+.arrow {
+  font-size: 20px;
+  color:#636696;
+  float: right;
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 25px;
+  bottom: 3px;
+  user-select: none;
 }
+
 </style>
 
