@@ -1,6 +1,16 @@
 import Log from '../ext/logger.js'
 export default {
   __list: [
+    {
+      active: false,
+      message: 'This request does not have a timestamp',
+      params: 'timestamp',
+      fatal: 'false',
+      wholeBulk: false,
+      test (timestamp) {
+        return !!timestamp
+      }
+    }
   ],
   get () {
     var list = Array.from(this.__list)

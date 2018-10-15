@@ -35,7 +35,7 @@ export default {
     this.registerComponentProperties('api-end-points-setting', 'API end points')
   },
   methods: {
-    registerComponentProperties (componentName, displayName, storageKey) {
+    registerComponentProperties (componentName, displayName) {
       if (!Object.keys(this.$options.components).includes(componentName)) {
         Log('root-settings', 'Component "' + componentName + '" could not been found. Dont forget to also include it in components section', 'warn')
         return

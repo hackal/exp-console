@@ -15,8 +15,8 @@
           </div>
           <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" @click='copy(key)'><path d="M22 6v16h-16v-16h16zm2-2h-20v20h20v-20zm-24 17v-21h21v2h-19v19h-2z"/></svg>
         </div>
+        <span v-if='!expanded' class='arrow'>«</span>
       </div>
-      <div class='ids-left'>
       <input type="text" id='copy-to-clip'>
     </div>
     <div class='gui-expanded'>
