@@ -1,6 +1,8 @@
-export default function Log (prefix, msg) {
+export default function Log (prefix, msg, type = 'log') {
   let backPage = chrome.extension.getBackgroundPage()
-  backPage.console.log(prefix)
-  backPage.console.log(msg)
-  console.log(msg)
+  backPage.console[type]('----' + prefix + '--------------')
+  backPage.console[type](msg)
+  if (backPage !== window) {
+    console[type](msg)
+  }
 }

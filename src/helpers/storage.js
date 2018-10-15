@@ -1,8 +1,6 @@
 export default class Storage {
   constructor () {
     this.provider = chrome.storage.local
-    this.cache = [] // todo implement local caching?
-    // this.updateCB = undefined
   }
 
   onUpdate (callback) {
@@ -24,6 +22,22 @@ export default class Storage {
         if (API_DOMAINS === undefined) resolve([])
         else resolve(API_DOMAINS)
       })
+    })
+  }
+
+  setDomains (list) {
+    const domainSet = new Set()
+
+    if (Array.isArray(list)) {
+      list.forEach(domain => {
+        domainSet.add(domain)
+      })
+    } else {
+      domainSet.add(list)
+    }
+
+    this.provider.set({ API_DOMAINS: Array.from(domainSet) }, () => {
+      // this.updateCB()
     })
   }
 
@@ -100,7 +114,8 @@ export default class Storage {
             TOKEN: company._id,
             API_DOMAIN: company.domain_mapping.api_domain,
             APP_DOMAIN: company.domain_mapping.app_domain,
-            SLUG: company.slug
+            SLUG: company.slug,
+            NAME: company.company_name
           }
         }
       })
@@ -108,6 +123,39 @@ export default class Storage {
       this.provider.set({ COMPANIES: companies }, () => {
         this.updateApiDomains()
       })
+    })
+  }
+
+  getSettings () {
+    return new Promise((resolve, reject) => {
+      this.provider.get(['SETTINGS'], ({SETTINGS}) => {
+        if (!SETTINGS) resolve({})
+        else resolve(SETTINGS)
+      })
+    })
+  }
+
+  updateSettings (settings, callback = function () {}) {
+    this.getSettings().then((oldSettings) => {
+      let newSettings = Object.assign(oldSettings, settings)
+      this.provider.set({SETTINGS: newSettings}, () => {
+        callback()
+      })
+    })
+  }
+
+  getCookie () {
+    return new Promise((resolve, reject) => {
+      this.provider.get(['COOKIE'], ({COOKIE}) => {
+        if (!COOKIE) resolve('')
+        else resolve(COOKIE)
+      })
+    })
+  }
+
+  setCookie (cookie, callback = function () {}) {
+    this.provider.set({COOKIE: cookie}, () => {
+      callback()
     })
   }
 }

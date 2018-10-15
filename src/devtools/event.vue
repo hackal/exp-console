@@ -1,24 +1,28 @@
 <template>
-    <div class='event eventBody'>
-        <div @click='expand' class='clickZone'>
-          <span class='circle' :style='circleStyle'></span>
-          <span class='name'>{{ data.name }}</span>
-          <span class='timestamp'>{{ date }}</span>
-        </div>
-        <div class='properties' v-if='rolledOut'>
+    <div class="event">
+      <div class="event-header" @click="expand()">
+        <span class='circle' :style='circleStyle'></span>
+        <span class='name'>{{ data.name }}</span>
+        <span class='timestamp'>{{ date }}</span>
+      </div>
+      <div class="event-body" v-if="rolledOut">
+        <div class="properties">
            <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
         </div>
+      </div>
     </div>
 </template>
 
 <script>
 import property from './property.vue'
+import dateFormat from 'dateformat'
 export default {
   props: ['data', 'size'],
-  data: function () {
+  data () {
     return {
-      colors: ['yellow', 'red', 'blue', 'limegreen', 'black', 'fuchsia', 'orange'],
-      rolledOut: false
+      colors: ['#FFEB3B', '#f44336', '#2196F3', '#CDDC39', '#4CAF50', '#9C27B0', '#FF9800'],
+      rolledOut: false,
+      calculated: false
     }
   },
   components: {
@@ -31,21 +35,50 @@ export default {
         sum += this.data.name.charCodeAt(i)
       }
       var col = this.colors[sum % this.colors.length]
-      var ret = { 'box-shadow': '0 0 0 3px ' + col + ', 0 0 0 3px ' + col }
+      var ret = { 'background-color': col }
       return ret
     },
+    warningStyle () {
+      let errors = this.data.errors
+      for (let i = 0; i < errors.length; ++i) {
+        let error = errors[i]
+        if (error.fatal) {
+          return { backgroundColor: 'red' }
+        }
+      }
+      return { backgroundColor: 'yellow' }
+    },
     date () {
-      return window.dateFormater.format(new Date(this.data.timeStamp), 'MMM DD,YYYY HH:mm:ss')
+      return dateFormat(this.data.timeStamp * 1000, 'mmm d,yyyy HH:MM:ss')
+    },
+    isRolledOut () {
+      return this.rolledOut
     }
   },
   methods: {
     expand () {
       this.rolledOut = !this.rolledOut
+    },
+    calculatePosition (rootEl) {
+      if (this.calculated) return
+      let tooltip = rootEl.querySelector('.tooltip')
+      tooltip.style.position = 'absolute'
+      tooltip.style.display = 'block'
+      tooltip.style.right = (tooltip.offsetWidth / 10) + 'px'
+      tooltip.style.top = (tooltip.offsetHeight / 10) + 'px'
+      this.calculated = true
+    },
+    cancelTooltip (rootEl) {
+      this.calculated = false
+      let tooltip = rootEl.querySelector('.tooltip')
+      tooltip.style.display = 'none'
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 @import "./eventBox.scss";
+
+
 
 </style>

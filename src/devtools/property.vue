@@ -36,6 +36,10 @@ export default {
           retVal = ' '
           break
         case 'object':
+          if (value === null) {
+            retVal = 'null'
+            break
+          }
           if (value.constructor.name === 'Object') {
             retVal = '{ '
             var first = true
@@ -72,20 +76,18 @@ export default {
 .property {
   max-height: 200px;
   overflow: hidden;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 6px 0;
 }
 .name {
   display: inline-block;
-  width: 35%;
+  width: 33%;
   min-width: 150px;
   text-align: left;
-  margin-left: 15px;
 }
 .value {
   display: inline-table;
   color: #7477b0;
   white-space: pre-line;
-  width: 62%;
+  width: 60%;
 }
 </style>

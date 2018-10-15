@@ -2,8 +2,14 @@
 
 Used for debugging purposes
 
-# Installation
+# User
 
+__Installation__
+link to an official chrome extension site -> link
+
+# Developers
+
+__Installation__
 `
 cd myproject
 npm install
@@ -18,3 +24,4 @@ If it throws error 'npm is not recognized as ...' include the npm folder in __En
 2. Advanced tab -> Environment Variables button 
 3. User variables -> Path -> Edit 
 4. New -> [PATH_TO_NPM] // C:\Program Files\nodejs\ 
+
