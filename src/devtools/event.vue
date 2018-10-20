@@ -17,7 +17,7 @@
 import property from './property.vue'
 import dateFormat from 'dateformat'
 export default {
-  props: ['data', 'size'],
+  props: ['data', 'size', 'test'],
   data () {
     return {
       colors: ['#FFEB3B', '#f44336', '#2196F3', '#CDDC39', '#4CAF50', '#9C27B0', '#FF9800'],

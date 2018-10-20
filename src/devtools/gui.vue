@@ -43,7 +43,8 @@ export default {
       expandedOffset: 40,
       copyEl: null,
       responseMsg: null,
-      idHeight: 18.5
+      idHeight: 18.5,
+      restore: []
     }
   },
   computed: {
@@ -98,8 +99,15 @@ export default {
       }
       return undefined
     },
+    restoreCookies () {
+      for (let i = 0; i < this.restore.length; ++i) {
+        chrome.cookies.set(this.restore[i])
+      }
+      // Todo set msg cookies have been restored
+    },
     trueAnonymize (host) {
       chrome.cookies.getAll({ domain: host }, cookies => {
+        this.restore = cookies
         for (let i = 0; i < cookies.length; ++i) {
           chrome.cookies.remove({ url: 'https://' + host, name: cookies[i].name })
         }
@@ -152,13 +160,13 @@ export default {
   
   .customer-button {
     margin-bottom: 5px;
-    width: 160px;
+    width: 190px;
   }
   .refresh-ids {
     background-color: rgb(197, 9, 9);
     border: 1px solid rgb(161, 10, 10);
     float: right;
-    width: 160px;
+    width: 190px;
   }
   .refresh-ids:hover {
     cursor: pointer;

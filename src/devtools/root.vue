@@ -85,7 +85,6 @@
       })
 
       this.$bus.$on('navigate', (data) => {
-        // let url = new URL(data) // todo remove this, just display url
         this.addItems([new Item('divider', 'divider', {}, data, data, [], Date.now() / 1000)])
       })
     },
@@ -103,9 +102,10 @@
         this.addItems([new Item('identify', 'update', updatedIds, '', '', [], Date.now() / 1000)])
       },
       addItems (items) {
-        for (let i = 0; i < items.length; ++i) {
+        this.items = items.concat(this.items)
+        /* for (let i = 0; i < items.length; ++i) {
           this.items.splice(0, 0, items[items.length - 1 - i])
-        }
+        } */
       }
     },
     components: {
