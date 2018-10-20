@@ -13,7 +13,7 @@
           <div class="eventPage">
             <div class="events-wrap">
               <div class='events'>
-                <component :is=' "exp-" + e.type' :key='index' :id='index' v-for='(e, index) in items' :data='e' :size='items.length' v-if='shouldShow(e)'></component>
+                <component :is=' "exp-" + e.type' :key='e.getId()' v-for='e in items' :data='e' :size='items.length' v-if='shouldShow(e)'></component>
               </div>
             </div>
             <div class="event-table-header">

@@ -51,7 +51,7 @@
       lastHost: '',
       guiExtraInfo: {
         token: '',
-        apiDomain: ''
+        host: ''
       },
       settings: {},
       feedbackDialog: false,
@@ -75,6 +75,7 @@
         let request = this.requestProcessor.processRequest(data)
         if (request.valid) {
           this.guiExtraInfo.token = request.projectToken
+          this.guiExtraInfo.host = request.items[0].host
           this.addItems(request.items)
         }
       })

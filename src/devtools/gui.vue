@@ -1,6 +1,6 @@
 <template>
   <div id='root-gui' @mouseover='expanded = true;' @mouseleave='expanded = false;' :style='rootStyle'>
-    <div class='gui-hidden'>
+    <div class='gui-hidden' v-if='showGui'>
       <div class='ids'>
         <div v-for='(key, index) in ids' :key='index' class='gui-row'>
           <div class='gui-key'>
@@ -19,13 +19,22 @@
       </div>
       <input type="text" id='copy-to-clip'>
     </div>
-    <div class='gui-expanded'>
-      <div class='button customer-button' v-if='showGui' @click='takeToApp()'>
+    <div class='gui-expanded' v-if='showGui'>
+      <div class='button customer-button' @click='takeToApp()'>
         <span>customer</span>
       </div>
       <span v-if='responseMsg'>{{ responseMsg }}</span>
-      <div class='button refresh-ids' v-if='showGui' @click='takeToApp()'>
-        <span>delete all cookies</span>
+      <div class='button refresh-ids' @click='trueAnonymize()'>
+        <span>delete site cookies</span>
+      </div>
+
+      <div v-if='false' class='conjoin-btn'>
+        <div class='button refresh-ids' @click='trueAnonymize()'>
+          <span>delete cookies</span>
+        </div>
+        <div class='button restore-ids' @click='restoreCookies()'>
+          <span>restore cookies</span>
+        </div>
       </div>
     </div>
   </div>
@@ -63,9 +72,6 @@ export default {
     }
   },
   methods: {
-    toggleClass (expanded) {
-      expanded ? this.rootEl.classList.add('expanded') : this.rootEl.classList.remove('expanded')
-    },
     copy (text) {
       this.copyEl.value = text
       this.copyEl.select()
@@ -103,13 +109,17 @@ export default {
       for (let i = 0; i < this.restore.length; ++i) {
         chrome.cookies.set(this.restore[i])
       }
-      // Todo set msg cookies have been restored
+      this.restore = []
     },
-    trueAnonymize (host) {
-      chrome.cookies.getAll({ domain: host }, cookies => {
-        this.restore = cookies
+    trueAnonymize () {
+      let hostFormat = this.info.host.replace('www', '')
+      chrome.cookies.getAll({ domain: hostFormat }, cookies => {
         for (let i = 0; i < cookies.length; ++i) {
-          chrome.cookies.remove({ url: 'https://' + host, name: cookies[i].name })
+          let cookie = cookies[i]
+          let prefix = cookie.httpOnly ? 'http://' : 'https://'
+          let url = prefix + cookie.domain.replace('www', '').replace('.', '')
+          this.restore.push({ url: url, value: cookie.value })
+          chrome.cookies.remove({ url: url, name: cookie.name })
         }
       })
     }
@@ -175,6 +185,35 @@ export default {
   .customer-button:hover {
     cursor: pointer;
     background-color: #0096b4;
+  }
+  .conjoin-btn {
+    float: right;
+    display: inline-block;
+    
+    .restore-ids {
+      background-color: rgb(33, 151, 9);
+      border: 1px solid rgb(23, 88, 10);
+      width: max-content;
+    }
+
+    .restore-ids:hover {
+      cursor: pointer;
+      background-color: rgb(27, 124, 7);
+    }
+
+    .refresh-ids {
+      background-color: rgb(197, 9, 9);
+      border: 1px solid rgb(141, 14, 14);
+      position: relative;
+      left: 5px;
+      float: initial;
+      width: max-content;
+    }
+
+    .refresh-ids:hover {
+      cursor: pointer;
+      background-color:  rgb(167, 15, 15);
+    }
   }
 }
 
