@@ -7,7 +7,7 @@
       </div>
       <div class="event-body" v-if="rolledOut">
         <div class="properties">
-           <exp-property v-if='rolledOut' :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
+           <exp-property :key='index' v-for='(p,index) in data.value' :name='index' :value='p' ></exp-property>
         </div>
       </div>
     </div>
@@ -16,8 +16,9 @@
 <script>
 import property from './property.vue'
 import dateFormat from 'dateformat'
+
 export default {
-  props: ['data', 'size', 'test'],
+  props: ['data', 'size'],
   data () {
     return {
       colors: ['#FFEB3B', '#f44336', '#2196F3', '#CDDC39', '#4CAF50', '#9C27B0', '#FF9800'],
@@ -50,9 +51,6 @@ export default {
     },
     date () {
       return dateFormat(this.data.timeStamp * 1000, 'mmm d,yyyy HH:MM:ss')
-    },
-    isRolledOut () {
-      return this.rolledOut
     }
   },
   methods: {

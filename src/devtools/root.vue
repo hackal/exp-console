@@ -13,7 +13,7 @@
       </a>
     </div>
 
-    <router-view :items='items' :settings='settings'></router-view>
+    <router-view :settings='settings'></router-view>
 
     <el-dialog
       title="Feedback and Suggestions"
@@ -39,7 +39,7 @@
   import ErrorCatcher from '../helpers/errorCatcher.js'
   import ErrorList from '../ext/filters.js'
   import Storage from '../helpers/storage.js'
-  import { SettingBus } from '../helpers/settingBus.js'
+  import { VueBus } from '../helpers/vueBus.js'
   import Exponea from '../helpers/exponea-sdk.js'
 
   const storage = new Storage()
@@ -47,7 +47,6 @@
     data: () => ({
       ids: {},
       requests: [],
-      items: [],
       activeTab: null,
       lastHost: '',
       guiExtraInfo: {
@@ -66,7 +65,7 @@
       this.requestProcessor.catchErrors(new ErrorCatcher(ErrorList.get()))
 
       this.settings = storage.getSettings()
-      SettingBus.$on('refreshSettings', () => {
+      VueBus.$on('refreshSettings', () => {
         this.settings = storage.getSettings()
       })
     },
@@ -102,10 +101,7 @@
         this.addItems([new Item('identify', 'update', updatedIds, '', '', [], Date.now() / 1000)])
       },
       addItems (items) {
-        this.items = items.concat(this.items)
-        /* for (let i = 0; i < items.length; ++i) {
-          this.items.splice(0, 0, items[items.length - 1 - i])
-        } */
+        VueBus.$emit('items_add', items)
       }
     },
     components: {

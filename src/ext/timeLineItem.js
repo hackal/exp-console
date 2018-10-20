@@ -21,7 +21,7 @@ export default class TimeLineItem {
   }
 
   getId () {
-    if (this.__id === -1) this.__id = Math.floor(Math.random() * 10000)
+    if (this.__id === -1) this.__id = '_' + Math.random().toString(36).substr(2, 9)
     return this.__id
   }
 }

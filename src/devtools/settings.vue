@@ -17,7 +17,7 @@ import Log from '../ext/logger.js'
 import General from './settings/general.vue'
 import ApiEndPoints from './settings/endPoints'
 import Storage from '../helpers/storage.js'
-import { SettingBus } from '../helpers/settingBus.js'
+import { VueBus } from '../helpers/vueBus.js'
 
 const storage = new Storage()
 export default {
@@ -44,7 +44,7 @@ export default {
     },
     saveSettings (settings) {
       storage.updateSettings(settings, () => {
-        SettingBus.$emit('refreshSettings')
+        VueBus.$emit('refreshSettings')
       })
     }
   },
