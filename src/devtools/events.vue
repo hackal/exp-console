@@ -13,7 +13,7 @@
           <div class="eventPage">
             <div class="events-wrap">
               <div class='events'>
-                <component :is=' "exp-" + e.type' :key='index' :test='index' v-for='(e,index) in items' :data='e' :size='items.length' v-if='shouldShow(e)'></component>
+                <component :is=' "exp-" + e.type' :key='index' :id='index' v-for='(e, index) in items' :data='e' :size='items.length' v-if='shouldShow(e)'></component>
               </div>
             </div>
             <div class="event-table-header">
@@ -34,6 +34,7 @@
   import divider from './divider.vue'
   import toggle from './switch.vue'
   import Names from './settings/names.js'
+  import { VueBus } from '../helpers/vueBus.js'
 
   export default {
     data: () => ({
@@ -43,19 +44,22 @@
         byName: '',
         showSessions: false
       },
+      items: [],
       sessionEventsNames: ['session_ping']
     }),
     props: [
-      'items',
       'settings'
     ],
-    computed: { },
-    created () { },
     components: {
       'exp-event': event,
       'exp-update': update,
       'exp-divider': divider,
       'exp-toggle': toggle
+    },
+    created () {
+      VueBus.$on('items_add', items => {
+        this.items = items.concat(this.items)
+      })
     },
     mounted () {
       this.settings.then((settings) => {
