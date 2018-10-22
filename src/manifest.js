@@ -24,7 +24,8 @@ module.exports = {
     'webRequest',
     'unlimitedStorage',
     'storage',
-    'cookies'
+    'cookies',
+    'webNavigation'
   ],
   browser_action: {
     default_title: 'Exponea Console (BETA)',

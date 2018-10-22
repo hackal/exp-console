@@ -112,16 +112,38 @@ export default {
       this.restore = []
     },
     trueAnonymize () {
-      let hostFormat = this.info.host.replace('www', '')
-      chrome.cookies.getAll({ domain: hostFormat }, cookies => {
-        for (let i = 0; i < cookies.length; ++i) {
-          let cookie = cookies[i]
-          let prefix = cookie.httpOnly ? 'http://' : 'https://'
-          let url = prefix + cookie.domain.replace('www', '').replace('.', '')
-          this.restore.push({ url: url, value: cookie.value })
-          chrome.cookies.remove({ url: url, name: cookie.name })
-        }
+      var cookies = []
+      chrome.webNavigation.getAllFrames({ tabId: this.$tabId }, details => {
+        var urls = details.reduce((urls, frame) => {
+          if (urls.indexOf(frame.url) === -1) urls.push(frame.url)
+          return urls
+        }, [])
+        var index = 0
+        urls.forEach(url => {
+          chrome.cookies.getAll({ url: url }, additionalCookies => {
+            cookies = cookies.concat(additionalCookies)
+            if (++index === urls.length) {
+              console.log(cookies)
+              cookies.forEach(cookie => {
+                let prefix = cookie.httpOnly ? 'http://' : 'https://'
+                let url = prefix + cookie.domain.replace('www', '').replace('.', '')
+                this.restore.push({ url: url, value: cookie.value })
+                chrome.cookies.remove({ url: url, name: cookie.name })
+              })
+            }
+          })
+        })
       })
+      // let hostFormat = this.info.host.replace('www', '')
+      // chrome.cookies.getAll({ domain: hostFormat }, cookies => {
+      //   for (let i = 0; i < cookies.length; ++i) {
+      //     let cookie = cookies[i]
+      //     let prefix = cookie.httpOnly ? 'http://' : 'https://'
+      //     let url = prefix + cookie.domain.replace('www', '').replace('.', '')
+      //     this.restore.push({ url: url, value: cookie.value })
+      //     chrome.cookies.remove({ url: url, name: cookie.name })
+      //   }
+      // })
     }
   },
   mounted () {
