@@ -31,7 +31,7 @@ extension.onSuspend(() => {
 
 appRequest.completed((details) => {
   const tabId = details.tabId
-  chrome.tabs.sendMessage(tabId, { type: 'APP_LOAD', request: details }, (response) => {
+  chrome.tabs.sendMessage(tabId, { type: 'DEV_APP_LOAD', request: details }, (response) => {
     if (response === undefined) return false
     const companies = response.companies
     exponea.trackEvent('update_companies')
